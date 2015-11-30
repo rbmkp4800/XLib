@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Source\XLib.Allocator.h" />
+    <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
+    <ClInclude Include="Source\XLib.NonCopyable.h" />
+    <ClInclude Include="Source\XLib.Math.h" />
+    <ClInclude Include="Source\XLib.Memory.h" />
+    <ClInclude Include="Source\XLib.Random.h" />
+    <ClInclude Include="Source\XLib.Types.h" />
+    <ClInclude Include="Source\XLib.Util.h" />
+    <ClInclude Include="Source\XLib.Vectors.Arithmetics.h" />
+    <ClInclude Include="Source\XLib.Vectors.h" />
+    <ClInclude Include="Source\XLib.Math.Vectors.h" />
+    <ClInclude Include="Source\XLib.System.Heap.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Atomics.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Event.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Timer.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Window.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Algorithm.QuickSort.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Algorithm.RadixSort.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.HeapBuffer.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.List.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.Set.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.Vector.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\XLib.Math.cpp" />
+    <ClCompile Include="Source\XLib.Memory.cpp" />
+    <ClCompile Include="Source\XLib.Random.cpp" />
+    <ClCompile Include="Source\XLib.System.Heap.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.ConditionVariable.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.Event.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Timer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Window.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Algorithm">
+      <UniqueIdentifier>{c88d098c-5348-4a18-8345-0d424751f6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{86283fbc-fc5f-4d83-bb5c-ae9788b5086f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{5cfaa074-5677-423f-91e2-ebcdf56919e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\XLib.System.Threading.ConditionVariable.h">
+      <Filter>System</Filter>
+    </None>
+  </ItemGroup>
+</Project>
