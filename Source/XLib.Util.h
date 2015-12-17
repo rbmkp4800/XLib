@@ -13,13 +13,13 @@ template <typename type> typename RemoveReference<type>::Type&& move(type&& obje
 template <typename resultType, typename argumentType>
 inline typename RemoveReference<resultType>::Type as(argumentType&& argument)
 {
-	static_assert(sizeof(resultType) == sizeof(argumentType), "Exlib.Util: as() function types must be same size");
+	static_assert(sizeof(resultType) == sizeof(argumentType), "Xlib.Util: as() function types must be same size");
 	return *((resultType*)&argument);
 }
 template <typename resultType, typename argumentType>
 inline typename RemoveReference<resultType>::Type& as(argumentType& argument)
 {
-	static_assert(sizeof(resultType) == sizeof(argumentType), "Exlib.Util: as() function types must be same size");
+	static_assert(sizeof(resultType) == sizeof(argumentType), "Xlib.Util: as() function types must be same size");
 	return *((resultType*)&argument);
 }
 

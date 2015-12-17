@@ -7,7 +7,7 @@ enum class ListAllocationPolicy
 	LocalCustomAllocator = 2,
 };
 
-template <typename Type>
+/*template <typename Type>
 class DoublyLinkedList
 {
 private:
@@ -79,4 +79,4 @@ public:
 	inline bool isEmpty() { return firstNode ? false : true; }
 	inline Enumerator getFront() const { return Enumerator(firstNode); }
 	inline Enumerator getBack() const { return Enumerator(lastNode); }
-};
+};*/

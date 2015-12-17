@@ -96,6 +96,8 @@ namespace _private
 		}
 
 		static constexpr uint32 bytesPerElement = sizeof(Node);
+
+		using type = Type;
 	};
 }
 

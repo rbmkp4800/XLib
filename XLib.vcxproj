@@ -24,7 +24,7 @@
     <ClInclude Include="Source\XLib.Allocator.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
     <ClInclude Include="Source\XLib.Containers.List.h" />
-    <ClInclude Include="Source\XLib.Containers.HeapBuffer.h" />
+    <ClInclude Include="Source\XLib.Containers.Buffer.h" />
     <ClInclude Include="Source\XLib.Containers.Vector.h" />
     <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
     <ClInclude Include="Source\XLib.NonCopyable.h" />
@@ -51,15 +51,11 @@
     <ClCompile Include="Source\XLib.Random.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp" />
     <ClCompile Include="Source\XLib.System.Heap.cpp" />
-    <ClCompile Include="Source\XLib.System.Threading.ConditionVariable.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Event.cpp" />
     <ClCompile Include="Source\XLib.System.Timer.cpp" />
     <ClCompile Include="Source\XLib.System.Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\XLib.System.Threading.ConditionVariable.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DF81A513-72E3-4B74-B866-97F3BB61D45F}</ProjectGuid>

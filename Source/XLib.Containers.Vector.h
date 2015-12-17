@@ -3,63 +3,63 @@
 #include "XLib.Types.h"
 #include "XLib.Util.h"
 #include "XLib.NonCopyable.h"
-#include "XLib.Containers.HeapBuffer.h"
+#include "XLib.Containers.Buffer.h"
 
 template <typename Type, uint32 initialBufferSize = 16>
 class Vector : public NonCopyable
 {
 private:
-	HeapBuffer<Type> buffer;
-	uint32 bufferSize;
+	Buffer<Type> buffer;
+	uint32 vectorSize;
 
 	inline void expandBuffer(uint32 minNewSize)
 	{
-		uint32 bufferSize = buffer.size();
-		if (bufferSize < minNewSize)
+		uint32 vectorSize = buffer.size();
+		if (vectorSize < minNewSize)
 		{
-			if (bufferSize)
-				bufferSize = maxval(bufferSize + bufferSize / 2 + 1, minNewSize);
+			if (vectorSize)
+				vectorSize = maxval(vectorSize + vectorSize / 2 + 1, minNewSize);
 			else
-				bufferSize = maxval(initialBufferSize, minNewSize);
-			buffer.resize(bufferSize);
+				vectorSize = maxval(initialBufferSize, minNewSize);
+			buffer.resize(vectorSize);
 		}
 	}
 
 public:
-	explicit Vector(uint32 initSize = 0) : buffer(initSize), bufferSize(initSize) {}
-	Vector(uint32 initSize, const Type* initData) : buffer(initSize, initData), bufferSize(initSize) {}
-	~Vector() { bufferSize = 0; }
+	explicit Vector(uint32 initSize = 0) : buffer(initSize), vectorSize(initSize) {}
+	Vector(uint32 initSize, const Type* initData) : buffer(initSize, initData), vectorSize(initSize) {}
+	~Vector() { vectorSize = 0; }
 
-	Vector(Vector&& that) : buffer(move(that.buffer)), bufferSize(that.bufferSize)
+	Vector(Vector&& that) : buffer(move(that.buffer)), vectorSize(that.vectorSize)
 	{
-		that.bufferSize = 0;
+		that.vectorSize = 0;
 	}
 	Vector& operator = (Vector&& that)
 	{
 		swap(buffer, that.buffer);
-		swap(bufferSize, that.bufferSize);
+		swap(vectorSize, that.vectorSize);
 		return *this;
 	}
 
 	inline Type& pushBack(const Type& value)
 	{
-		expandBuffer(bufferSize + 1);
-		buffer[bufferSize] = value;
-		return buffer[bufferSize++];
+		expandBuffer(vectorSize + 1);
+		buffer[vectorSize] = value;
+		return buffer[vectorSize++];
 	}
 	inline Type popBack()
 	{
-		if (bufferSize)
-			return buffer[--bufferSize];
+		if (vectorSize)
+			return buffer[--vectorSize];
 		else
 			throw;
 	}
-	inline Type& back() { return buffer[bufferSize - 1]; }
+	inline Type& back() { return buffer[vectorSize - 1]; }
 
 	template <typename KeyType>
 	Type* find(const KeyType& key)
 	{
-		for (Type *current = buffer, *end = buffer + bufferSize; current < end; current++)
+		for (Type *current = buffer, *end = buffer + vectorSize; current < end; current++)
 		{
 			if (*current == key)
 				return current;
@@ -70,7 +70,7 @@ public:
 	template <typename KeyType>
 	uint32 findIndex(const KeyType& key)
 	{
-		for (uint32 i = 0; i < bufferSize; i++)
+		for (uint32 i = 0; i < vectorSize; i++)
 		{
 			if (buffer[i] == key)
 				return i;
@@ -80,32 +80,34 @@ public:
 
 	void resize(uint32 newSize)
 	{
-		bufferSize = newSize;
-		expandBuffer(bufferSize);
+		vectorSize = newSize;
+		expandBuffer(vectorSize);
 	}
 	void compact()
 	{
-		buffer.resize(bufferSize);
+		buffer.resize(vectorSize);
 	}
 
 	Vector<Type> copy()
 	{
-		return Vector<Type>(bufferSize, buffer.getData());
+		return Vector<Type>(vectorSize, buffer.getData());
 	}
-	HeapBuffer<Type> convertToHeapArray()
+	Buffer<Type> convertToBuffer()
 	{
-		buffer.resize(bufferSize);
-		bufferSize = 0;
+		buffer.resize(vectorSize);
+		vectorSize = 0;
 		return move(buffer);
 	}
 
 	inline operator Type*() const { return buffer; }
-	inline uint32 size() const { return bufferSize; }
-	inline uint32 byteSize() const { return bufferSize * sizeof(Type); }
-	inline bool isEmpty() const { return bufferSize ? false : true; }
+	inline uint32 size() const { return vectorSize; }
+	inline uint32 byteSize() const { return vectorSize * sizeof(Type); }
+	inline bool isEmpty() const { return vectorSize ? false : true; }
 
 	inline Type* begin() const { return buffer; }
-	inline Type* end() const { return buffer + bufferSize; }
+	inline Type* end() const { return buffer + vectorSize; }
 
 	static constexpr uint32 indexNotFound = uint32(-1);
+
+	using type = Type;
 };

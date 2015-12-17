@@ -35,12 +35,6 @@ public:
 	{
 
 	}*/
-	template <typename Type, uint32 count>
-	static inline void WaitAll(Type(&waitables)[count], uint32 waitableCount)
-	{
-		_private::WaitAll((void**)waitables, waitableCount);
-		static_assert(sizeof(Type) == sizeof(void*), "Waitable must inherit IWaitable interface, member vars not allowed");
-	}
 
 	bool wait();
 	bool wait(uint32 timeout);
@@ -71,5 +65,14 @@ public:
 	inline void create(ThreadMainProc<Type> threadMainProc, Type* args = nullptr, bool suspended = false)
 	{
 		_create(ThreadMainProc<void>(threadMainProc), args, suspended);
+	}
+
+	void Sleep(uint32 milliseconds);
+
+	template <typename Type, uint32 count>
+	static inline void WaitAll(Type(&waitables)[count], uint32 waitableCount)
+	{
+		_private::WaitAll((void**)waitables, waitableCount);
+		static_assert(sizeof(Type) == sizeof(void*), "Waitable must inherit IWaitable interface, member vars not allowed");
 	}
 };

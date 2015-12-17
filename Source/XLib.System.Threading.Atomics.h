@@ -2,33 +2,143 @@
 
 #include "XLib.Types.h"
 
-namespace _Private
-{
-	template <uint32 size>
-	class _AtomicBase;
+/*
+	+-------------------------------+-----------------------------------+
+	|        Reordering type        |   ARMv7   x86     AMD64   IA-64   |
+	+-------------------------------+-----------------------------------+
+	| Loads reordered after loads   |     +                       +     |
+	| Loads reordered after stores  |     +                       +     |
+	| Stores reordered after stores |     +                       +     |
+	| Stores reordered after loads  |     +      +        +       +     |
+	| Atomic reordered with loads   |     +                       +     |
+	| Atomic reordered with stores  |     +                       +     |
+	+-------------------------------+-----------------------------------+
 
-	template <>
-	class _AtomicBase<sizeof(uint32)>
-	{
-	protected:
-		static uint32 _increment(volatile void* ptr);
-	};
-}
+	+--------------------------------+---------------------------------------------+
+	|           Fence type           |             SPARC RMO semantics             |
+	+--------------------------------+---------------------------------------------+
+	| Acquire                        | LoadStore, LoadLoad                         |
+	| Release                        | LoadStore, StoreStore                       |
+	| Acquire-release                | LoadStore, LoadLoad, StoreStore             |
+	| Full (sequentially consistent) | LoadStore, LoadLoad, StoreStore, StoreLoad  |
+	+--------------------------------+---------------------------------------------+
+*/
 
-template <typename Type>
-class Atomic : public _Private::_AtomicBase<sizeof(Type)>
+class Atomics abstract
 {
 private:
-	volatile Type value;
+	template <uint32 size> struct Core;
+
+	template <> struct Core<sizeof(uint16)> abstract
+	{
+		using Type = uint16;
+
+		static uint16 Add(volatile uint16* target, uint16 value);
+		static uint16 Sub(volatile uint16* target, uint16 value);
+		static uint16 Exchange(volatile uint16* target, uint16 value);
+		static uint16 Increment(volatile uint16* target);
+		static uint16 Decrement(volatile uint16* target);
+		static uint16 CompareExchange(volatile uint16* target, uint16 exchange, uint16 comparand);
+		static uint16 And(volatile uint16* target, uint16 value);
+		static uint16 Or(volatile uint16* target, uint16 value);
+		static uint16 Xor(volatile uint16* target, uint16 value);
+		static uint16 Load(volatile uint16* target);
+		static void Store(volatile uint16* target, uint16 value);
+	};
+	template <> struct Core<sizeof(uint32)> abstract
+	{
+		using Type = uint32;
+
+		static uint32 Add(volatile uint32* target, uint32 value);
+		static uint32 Sub(volatile uint32* target, uint32 value);
+		static uint32 Exchange(volatile uint32* target, uint32 value);
+		static uint32 Increment(volatile uint32* target);
+		static uint32 Decrement(volatile uint32* target);
+		static uint32 CompareExchange(volatile uint32* target, uint32 exchange, uint32 comparand);
+		static uint32 And(volatile uint32* target, uint32 value);
+		static uint32 Or(volatile uint32* target, uint32 value);
+		static uint32 Xor(volatile uint32* target, uint32 value);
+		static uint32 Load(volatile uint32* target);
+		static void Store(volatile uint32* target, uint32 value);
+	};
+	template <> struct Core<sizeof(uint64)> abstract
+	{
+		using Type = uint64;
+
+		static uint64 Add(volatile uint64* target, uint64 value);
+		static uint64 Sub(volatile uint64* target, uint64 value);
+		static uint64 Exchange(volatile uint64* target, uint64 value);
+		static uint64 Increment(volatile uint64* target);
+		static uint64 Decrement(volatile uint64* target);
+		static uint64 CompareExchange(volatile uint64* target, uint64 exchange, uint64 comparand);
+		static uint64 And(volatile uint64* target, uint64 value);
+		static uint64 Or(volatile uint64* target, uint64 value);
+		static uint64 Xor(volatile uint64* target, uint64 value);
+		static uint64 Load(volatile uint64* target);
+		static void Store(volatile uint64* target, uint64 value);
+	};
 
 public:
+	template <typename Type> static inline Type Add(volatile Type& target, Type value)		{ return Core<sizeof(Type)>::Add		((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type Sub(volatile Type& target, Type value)		{ return Core<sizeof(Type)>::Sub		((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type Exchange(volatile Type& target, Type value)	{ return Core<sizeof(Type)>::Exchange	((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type And(volatile Type& target, Type value)		{ return Core<sizeof(Type)>::And		((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type Or(volatile Type& target, Type value)		{ return Core<sizeof(Type)>::Or			((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type Xor(volatile Type& target, Type value)		{ return Core<sizeof(Type)>::Xor		((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type CompareExchange(volatile Type& target, Type exchange, Type comparand) { return Core<sizeof(Type)>::CompareExchange((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(exchange), Core<sizeof(Type)>::Type(comparand)); }
+	template <typename Type> static inline Type Increment(volatile Type& target)	{ return Core<sizeof(Type)>::Increment	((Core<sizeof(Type)>::Type*)&target); }
+	template <typename Type> static inline Type Decrement(volatile Type& target)	{ return Core<sizeof(Type)>::Decrement	((Core<sizeof(Type)>::Type*)&target); }
+	template <typename Type> static inline Type Load(volatile Type& target)			{ return Core<sizeof(Type)>::Load		((Core<sizeof(Type)>::Type*)&target); }
+	template <typename Type> static inline void Store(volatile Type& target, Type value) { Core<sizeof(Type)>::Store((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type LoadAcquire(volatile Type& target)
+	{
+		Type value = Core<sizeof(Type)>::Load((Core<sizeof(Type)>::Type*)&target);
+		FenceAcquire();
+		return value;
+	}
+	template <typename Type> static inline void StoreRelease(volatile Type& target, Type value)
+	{
+		FenceRelease();
+		Core<sizeof(Type)>::Store((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value));
+	}
+
+	static void FenceAcquire();
+	static void FenceRelease();
+	static void FenceAcquireRelease();
+	static void FenceFull();
+};
+
+template <typename Type>
+struct Atomic
+{
+	static_assert(sizeof(Type) == 2 || sizeof(Type) == 4 || sizeof(Type) == 8,
+		"XLib.Threading.Atomic type must be 2/4/8 bytes width");
+
+	__declspec(align(sizeof(Type))) volatile Type value;
+
 	Atomic() = default;
 	inline Atomic(Type _value) : value(_value) {}
 
-	inline Type increment() { return _increment(&value); }
-	inline Type load() { return value; /*LOL*/ }
-	inline void store(const Type& _value) { value = _value; /*LOL*/ }
-
-	inline Type get() { return value; }
-	inline void set(const Type& _value) { value = _value; }
+	inline Type add(Type a) { return Atomics::Add(value, a); }
+	inline Type sub(Type a) { return Atomics::Sub(value, a); }
+	inline Type exchange(Type a) { return Atomics::Exchange(value, a); }
+	inline Type increment() { return Atomics::Increment(value); }
+	inline Type decrement() { return Atomics::Decrement(value); }
+	inline Type compareExchange(Type a) { return Atomics::CompareExchange(value, a); }
+	/*inline Type and() { return Atomics::And(value); }
+	inline Type or() { return Atomics::Or(value); }
+	inline Type xor() { return Atomics::Xor(value); }*/
+	inline Type load() { return Atomics::Load(value); }
+	inline void store(Type a) { Atomics::Store(value, a); }
+	inline Type loadAcquire()
+	{
+		Type a = Atomics::Load(value);
+		Atomics::FenceAcquire();
+		return a;
+	}
+	inline void storeRelease(Type a)
+	{
+		Atomics::FenceRelease();
+		Atomics::Store(value, a);
+	}
 };

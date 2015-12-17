@@ -7,8 +7,8 @@
 class CyclicBarrier : public NonCopyable
 {
 private:
-	Atomic<uint32> counter;
 	Event events[2];
+	Atomic<uint32> counter;
 	uint32 threadCount;
 	uint8 eventSelector;
 
@@ -21,7 +21,7 @@ public:
 	{
 		if (_threadCount)
 		{
-			counter.set(0);
+			counter.value = 0;
 			events[0].initialize(false);
 			events[1].initialize(false);
 			threadCount = _threadCount;
@@ -32,7 +32,7 @@ public:
 	}
 	inline void destroy()
 	{
-		counter.set(0);
+		counter.value = 0;
 		events[0].destroy();
 		events[1].destroy();
 		threadCount = 0;
@@ -54,7 +54,7 @@ public:
 		else
 		{
 			callback();
-			counter.set(0);
+			counter.value = 0;
 			eventSelector = (eventSelector + 1) % 2;
 			event.set();
 		}

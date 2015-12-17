@@ -15,21 +15,6 @@
     <ClInclude Include="Source\XLib.System.Heap.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.Atomics.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.Event.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.System.Timer.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -42,9 +27,6 @@
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h">
       <Filter>Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Containers.HeapBuffer.h">
-      <Filter>Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.Containers.List.h">
       <Filter>Containers</Filter>
     </ClInclude>
@@ -52,6 +34,24 @@
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\XLib.Containers.Vector.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Atomics.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Event.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.Buffer.h">
       <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,26 +62,23 @@
     <ClCompile Include="Source\XLib.System.Heap.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.ConditionVariable.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.Event.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.System.Timer.cpp">
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Source\XLib.System.Window.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp">
+      <Filter>System\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.cpp">
+      <Filter>System\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp">
+      <Filter>System\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Threading.Event.cpp">
+      <Filter>System\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,10 +91,8 @@
     <Filter Include="System">
       <UniqueIdentifier>{5cfaa074-5677-423f-91e2-ebcdf56919e1}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\XLib.System.Threading.ConditionVariable.h">
-      <Filter>System</Filter>
-    </None>
+    <Filter Include="System\Threading">
+      <UniqueIdentifier>{43c90392-b461-4a3c-b74a-9eb797e20393}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
