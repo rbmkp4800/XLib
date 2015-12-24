@@ -47,6 +47,10 @@ namespace _Private
 					window->onKeyDown(VirtualKey(wParam));
 					break;
 
+				case WM_KEYUP:
+					window->onKeyUp(VirtualKey(wParam));
+					break;
+
 				case WM_MOUSEMOVE:
 					window->onMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam),
 						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);

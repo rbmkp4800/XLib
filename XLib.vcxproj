@@ -27,6 +27,7 @@
     <ClInclude Include="Source\XLib.Containers.Buffer.h" />
     <ClInclude Include="Source\XLib.Containers.Vector.h" />
     <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
+    <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
     <ClInclude Include="Source\XLib.NonCopyable.h" />
     <ClInclude Include="Source\XLib.Math.h" />
     <ClInclude Include="Source\XLib.Memory.h" />

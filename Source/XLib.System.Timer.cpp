@@ -2,14 +2,14 @@
 
 #include "XLib.System.Timer.h"
 
-TimerRecord Timer::getRecord()
+TimerRecord Timer::GetRecord()
 {
 	uint64 record = 0;
 	QueryPerformanceCounter(PLARGE_INTEGER(&record));
 	return TimerRecord(record);
 }
 
-float32 Timer::getElapsedTimeMs(TimerRecord record1, TimerRecord record2)
+float32 Timer::GetElapsedTimeMs(TimerRecord record1, TimerRecord record2)
 {
 	static float32 frequency = 0.0f;
 	if (frequency == 0.0f)

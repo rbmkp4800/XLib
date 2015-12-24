@@ -5,7 +5,7 @@
 #include "XLib.Vectors.Arithmetics.h"
 #include "XLib.Math.h"
 
-class VectorMath abstract final
+struct VectorMath abstract final
 {
 	static inline float32 Length(const float32x2& v) { return Math::Sqrt(v.x * v.x + v.y * v.y); }
 	static inline float32 Length(const float32x3& v) { return Math::Sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }

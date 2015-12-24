@@ -45,3 +45,8 @@ bool _private::WaitAll(void** handles, uint32 handleCount)
 	WaitForMultipleObjects(handleCount, handles, true, INFINITE);
 	return true;
 }
+
+void Thread::Sleep(uint32 milliseconds)
+{
+	::Sleep(milliseconds);
+}

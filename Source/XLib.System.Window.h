@@ -13,6 +13,7 @@ enum class VirtualKey : uint32
 	Up = 0x26,
 	Right = 0x27,
 	Down = 0x28,
+	Space = 0x20,
 };
 
 enum class MouseButton : uint32
@@ -54,6 +55,7 @@ protected:
 	virtual void onDestroy() {}
 	virtual void onResize(uint16 width, uint16 height) {}
 	virtual void onKeyDown(VirtualKey key) {}
+	virtual void onKeyUp(VirtualKey key) {}
 	virtual void onMouseMove(sint16 x, sint16 y, bool leftButton, bool middleButton, bool rightButton) {}
 	virtual void onMouseUp(sint16 x, sint16 y, MouseButton button, bool leftButton, bool middleButton, bool rightButton) {}
 	virtual void onMouseDown(sint16 x, sint16 y, MouseButton button, bool leftButton, bool middleButton, bool rightButton) {}

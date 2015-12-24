@@ -54,6 +54,7 @@
     <ClInclude Include="Source\XLib.Containers.Buffer.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />

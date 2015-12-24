@@ -67,7 +67,7 @@ public:
 		_create(ThreadMainProc<void>(threadMainProc), args, suspended);
 	}
 
-	void Sleep(uint32 milliseconds);
+	static void Sleep(uint32 milliseconds);
 
 	template <typename Type, uint32 count>
 	static inline void WaitAll(Type(&waitables)[count], uint32 waitableCount)
