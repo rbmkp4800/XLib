@@ -11,10 +11,6 @@
     <ClInclude Include="Source\XLib.Util.h" />
     <ClInclude Include="Source\XLib.Vectors.Arithmetics.h" />
     <ClInclude Include="Source\XLib.Vectors.h" />
-    <ClInclude Include="Source\XLib.Math.Vectors.h" />
-    <ClInclude Include="Source\XLib.System.Heap.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.System.Timer.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -51,18 +47,17 @@
     <ClInclude Include="Source\XLib.System.Threading.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Containers.Buffer.h">
-      <Filter>Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
+    <ClInclude Include="Source\XLib.Heap.h" />
+    <ClInclude Include="Source\XLib.Application.h" />
+    <ClInclude Include="Source\XLib.Float.Conversion.h" />
+    <ClInclude Include="Source\XLib.Float.Consts.h" />
+    <ClInclude Include="Source\XLib.Vectors.Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
-    <ClCompile Include="Source\XLib.System.Heap.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.System.Timer.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -81,6 +76,8 @@
     <ClCompile Include="Source\XLib.System.Threading.Event.cpp">
       <Filter>System\Threading</Filter>
     </ClCompile>
+    <ClCompile Include="Source\XLib.Heap.cpp" />
+    <ClCompile Include="Source\XLib.Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">

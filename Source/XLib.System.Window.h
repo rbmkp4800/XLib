@@ -1,8 +1,9 @@
 #pragma once
 
 #include "XLib.Types.h"
+#include "XLib.NonCopyable.h"
 
-enum class VirtualKey : uint32
+enum class VirtualKey : uint8
 {
 	Escape = 0x1b,
 	Backspace = 0x08,
@@ -15,31 +16,60 @@ enum class VirtualKey : uint32
 	Down = 0x28,
 	Space = 0x20,
 };
-
-enum class MouseButton : uint32
+enum class MouseButton : uint8
 {
 	Left = 1,
 	Middle = 2,
 	Right = 3,
 };
 
-namespace _Private
+struct CreationArgs
 {
-	class _WindowInternal;
+	uint16 width, height;
+};
+struct ResizingArgs
+{
+	uint16 width, height;
+};
+struct KeyEventArgs
+{
+	VirtualKey key;
+};
+struct MouseState
+{
+	sint16 x, y;
+	bool leftButton, middleButton, rightButton;
+};
+
+namespace XLib_Internal
+{
+	class WindowInternal;
 }
 
-class Window
+class Window : public NonCopyable
 {
-	friend _Private::_WindowInternal;
+	friend XLib_Internal::WindowInternal;
 
 private:
 	void *handle;
+
+protected:
+	virtual void onCreate(CreationArgs& args) {}
+	virtual void onRedraw() {}
+	virtual void onDestroy() {}
+	virtual void onResize(ResizingArgs& args) {}
+	virtual void onKeyDown(KeyEventArgs& args) {}
+	virtual void onKeyUp(KeyEventArgs& args) {}
+	virtual void onMouseMove(MouseState& state) {}
+	virtual void onMouseButtonDown(MouseState& state, MouseButton button) {}
+	virtual void onMouseButtonUp(MouseState& state, MouseButton button) {}
+	virtual void onMouseWheel(MouseState& state, float32 delta) {}
 
 public:
 	Window();
 	~Window();
 
-	void create(uint32 width, uint32 height, wchar* title);
+	void create(uint16 width, uint16 height, wchar* title);
 	void show();
 	void hide();
 	void destroy();
@@ -48,16 +78,4 @@ public:
 	void dispatchAll();
 
 	inline void* getHandle() const { return handle; }
-	inline bool isInitialized() const { return handle ? true : false; }
-
-protected:
-	virtual void onCreate(uint16 width, uint16 height) {}
-	virtual void onDestroy() {}
-	virtual void onResize(uint16 width, uint16 height) {}
-	virtual void onKeyDown(VirtualKey key) {}
-	virtual void onKeyUp(VirtualKey key) {}
-	virtual void onMouseMove(sint16 x, sint16 y, bool leftButton, bool middleButton, bool rightButton) {}
-	virtual void onMouseUp(sint16 x, sint16 y, MouseButton button, bool leftButton, bool middleButton, bool rightButton) {}
-	virtual void onMouseDown(sint16 x, sint16 y, MouseButton button, bool leftButton, bool middleButton, bool rightButton) {}
-	virtual void onMouseWheel(float32 delta) {}
 };

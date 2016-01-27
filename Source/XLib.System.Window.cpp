@@ -5,9 +5,18 @@
 
 static constexpr wchar windowClassName[] = L"XLib.Window";
 
-namespace _Private
+CreationArgs creationArgs(uint16 x, uint16 y) {	return { x, y }; }
+ResizingArgs resizingArgs(uint16 x, uint16 y) { return { x, y }; }
+KeyEventArgs keyEventArgs(VirtualKey key) { return { key }; }
+MouseState mouseState(WPARAM wParam, LPARAM lParam)
 {
-	class _WindowInternal abstract final
+	return { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam),
+		wParam & MK_LBUTTON ? true : false, wParam & MK_MBUTTON ? true : false, wParam & MK_RBUTTON ? true : false };
+}
+
+namespace XLib_Internal
+{
+	class WindowInternal abstract final
 	{
 	public:
 		static LRESULT __stdcall WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -31,8 +40,17 @@ namespace _Private
 					window->handle = hWnd;
 					RECT clientRect = { 0 };
 					GetClientRect(hWnd, &clientRect);
-					window->onCreate(uint16(clientRect.right - clientRect.left),
-						uint16(clientRect.bottom - clientRect.top));
+					window->onCreate(creationArgs(uint16(clientRect.right - clientRect.left),
+						uint16(clientRect.bottom - clientRect.top)));
+				}
+					break;
+
+				case WM_PAINT:
+				{
+					PAINTSTRUCT ps;
+					BeginPaint(HWND(window->handle), &ps);
+					window->onRedraw();
+					EndPaint(HWND(window->handle), &ps);
 				}
 					break;
 
@@ -41,43 +59,39 @@ namespace _Private
 					break;
 
 				case WM_SIZE:
-					window->onResize(LOWORD(lParam), HIWORD(lParam));
+					window->onResize(resizingArgs(LOWORD(lParam), HIWORD(lParam)));
 
 				case WM_KEYDOWN:
-					window->onKeyDown(VirtualKey(wParam));
+					window->onKeyDown(keyEventArgs(VirtualKey(wParam)));
 					break;
 
 				case WM_KEYUP:
-					window->onKeyUp(VirtualKey(wParam));
+					window->onKeyUp(keyEventArgs(VirtualKey(wParam)));
 					break;
 
 				case WM_MOUSEMOVE:
-					window->onMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam),
-						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);
+					window->onMouseMove(mouseState(wParam, lParam));
 					break;
 
 				case WM_LBUTTONDOWN:
-					window->onMouseDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MouseButton::Left,
-						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);
+					window->onMouseButtonDown(mouseState(wParam, lParam), MouseButton::Left );
 					break;
 
 				case WM_LBUTTONUP:
-					window->onMouseUp(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MouseButton::Left,
-						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);
+					window->onMouseButtonUp(mouseState(wParam, lParam), MouseButton::Left);
 					break;
 
 				case WM_RBUTTONDOWN:
-					window->onMouseDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MouseButton::Right,
-						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);
+					window->onMouseButtonDown(mouseState(wParam, lParam), MouseButton::Right);
 					break;
 
 				case WM_RBUTTONUP:
-					window->onMouseUp(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MouseButton::Right,
-						wParam & MK_LBUTTON, wParam & MK_MBUTTON, wParam & MK_RBUTTON);
+					window->onMouseButtonUp(mouseState(wParam, lParam), MouseButton::Right);
 					break;
 
 				case WM_MOUSEWHEEL:
-					window->onMouseWheel(float32(GET_WHEEL_DELTA_WPARAM(wParam)) / float32(WHEEL_DELTA));
+					window->onMouseWheel(mouseState(wParam, lParam),
+						float32(GET_WHEEL_DELTA_WPARAM(wParam)) / float32(WHEEL_DELTA));
 					break;
 
 				default:
@@ -101,7 +115,7 @@ Window::~Window()
 	}
 }
 
-void Window::create(uint32 width, uint32 height, wchar* title)
+void Window::create(uint16 width, uint16 height, wchar* title)
 {
 	HINSTANCE hInstance = GetModuleHandle(nullptr);
 
@@ -111,7 +125,7 @@ void Window::create(uint32 width, uint32 height, wchar* title)
 		WNDCLASSEX wcex;
 		wcex.cbSize = sizeof(WNDCLASSEX);
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc = _Private::_WindowInternal::WndProc;
+		wcex.lpfnWndProc = XLib_Internal::WindowInternal::WndProc;
 		wcex.cbClsExtra = 0;
 		wcex.cbWndExtra = 0;
 		wcex.hInstance = hInstance;

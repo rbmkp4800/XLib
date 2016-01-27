@@ -104,9 +104,9 @@ struct Matrix3x2
 	}
 	inline void reflection(float32 x, float32 y)
 	{
-		float32 d = sqrval(x) + sqrval(y);
+		float32 d = sqr(x) + sqr(y);
 		float32 m = 2.0f * x * y / d;
-		float32 s = (sqrval(x) - sqrval(y)) / d;
+		float32 s = (sqr(x) - sqr(y)) / d;
 
 		data[0][0] = s;
 		data[0][1] = m;

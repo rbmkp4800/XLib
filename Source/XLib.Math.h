@@ -16,17 +16,12 @@ public:
 	template <typename vectorType, typename coefType> static constexpr inline vectorType LinInterp(const vectorType& a, const vectorType& b, coefType coef) { return a + vectorType((b - a) * coef); }
 	template <typename type> static constexpr inline type LinCoef(type a, type b, type c) { return (a - c) / (a - b); }
 
-	template <typename type> static constexpr inline type Sqr(type val) { return sqrval(val); }
-	template <typename type> static constexpr inline type Abs(type val) { return absval(val); }
-	template <typename type> static constexpr inline type Min(type val1, type val2) { return minval(val1, val2); }
-	template <typename type> static constexpr inline type Max(type val1, type val2) { return maxval(val1, val2); }
-	template <typename type> static constexpr inline type Min(type val1, type val2, type val3) { return minval(val1, minval(val2, val3)); }
-	template <typename type> static constexpr inline type Max(type val1, type val2, type val3) { return maxval(val1, maxval(val2, val3)); }
-
 	static inline float32 NanF32() { return as<float32>(uint32(0x7fc0'0000)); }
 	static inline float64 NanF64() { return as<float64>(uint64(0x7ff8'0000'0000'0000ull)); }
 	static constexpr float32 PiF32 = 3.14159265f;
 	static constexpr float64 PiF64 = 3.141592653589793238;
+	static constexpr float32 EF32 = 2.71828182f;
+	static constexpr float64 EF64 = 2.718281828459045233;
 
 	static float32 Sqrt(float32 arg);
 	static float32 Sin(float32 arg);

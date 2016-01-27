@@ -7,9 +7,8 @@ struct vec2
 {
 	type x, y;
 
-	inline vec2() = default;
+	vec2() = default;
 	constexpr inline vec2(type _x, type _y) : x(_x), y(_y) {}
-	inline void set(type _x, type _y) { x = _x; y = _y; }
 };
 
 template <typename type>
@@ -17,9 +16,8 @@ struct vec3
 {
 	type x, y, z;
 
-	inline vec3() = default;
+	vec3() = default;
 	constexpr inline vec3(type _x, type _y, type _z) : x(_x), y(_y), z(_z) {}
-	inline void set(type _x, type _y, type _z) { x = _x; y = _y; z = _z; }
 };
 
 template <typename type>
@@ -27,9 +25,8 @@ struct vec4
 {
 	type x, y, z, w;
 
-	inline vec4() = default;
+	vec4() = default;
 	constexpr inline vec4(type _x, type _y, type _z, type _w) : x(_x), y(_y), z(_z), w(_w) {}
-	inline void set(type _x, type _y, type _z, type _w) { x = _x; y = _y; z = _z; w = _w; }
 };
 
 template <typename type1, typename type2> constexpr inline bool operator == (const vec2<type1>& a, const vec2<type2>& b) { return a.x == b.x && a.y == b.y; }
@@ -41,10 +38,8 @@ struct rectvar
 {
 	type left, top, right, bottom;
 
-	inline rectvar() = default;
+	rectvar() = default;
 	constexpr inline rectvar(type _left, type _top, type _right, type _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) {}
-
-	inline void set(type _left, type _top, type _right, type _bottom) { left = _left; top = _top; right = _right; bottom = _bottom; }
 };
 
 using uint8x2 = vec2<uint8>;

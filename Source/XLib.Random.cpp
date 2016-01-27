@@ -1,3 +1,3 @@
 #include "XLib.Random.h"
 
-Random Random::global;
+Random Random::Global;

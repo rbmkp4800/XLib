@@ -22,9 +22,12 @@
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
     <ClInclude Include="Source\XLib.Allocator.h" />
+    <ClInclude Include="Source\XLib.Application.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
     <ClInclude Include="Source\XLib.Containers.List.h" />
-    <ClInclude Include="Source\XLib.Containers.Buffer.h" />
+    <ClInclude Include="Source\XLib.Float.Consts.h" />
+    <ClInclude Include="Source\XLib.Float.Conversion.h" />
+    <ClInclude Include="Source\XLib.Heap.h" />
     <ClInclude Include="Source\XLib.Containers.Vector.h" />
     <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
     <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
@@ -33,7 +36,6 @@
     <ClInclude Include="Source\XLib.Memory.h" />
     <ClInclude Include="Source\XLib.Random.h" />
     <ClInclude Include="Source\XLib.System.Threading.Atomics.h" />
-    <ClInclude Include="Source\XLib.System.Heap.h" />
     <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h" />
     <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h" />
     <ClInclude Include="Source\XLib.System.Threading.Event.h" />
@@ -44,14 +46,15 @@
     <ClInclude Include="Source\XLib.Util.h" />
     <ClInclude Include="Source\XLib.Vectors.Arithmetics.h" />
     <ClInclude Include="Source\XLib.Vectors.h" />
-    <ClInclude Include="Source\XLib.Math.Vectors.h" />
+    <ClInclude Include="Source\XLib.Vectors.Math.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\XLib.Application.cpp" />
+    <ClCompile Include="Source\XLib.Heap.cpp" />
     <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp" />
-    <ClCompile Include="Source\XLib.System.Heap.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Event.cpp" />
