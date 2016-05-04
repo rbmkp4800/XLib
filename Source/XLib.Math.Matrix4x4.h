@@ -4,7 +4,7 @@
 #include "XLib.Util.h"
 #include "XLib.Vectors.h"
 #include "XLib.Math.h"
-#include "XLib.Math.Vectors.h"
+#include "XLib.Vectors.Math.h"
 
 class Matrix4x4
 {
@@ -115,11 +115,11 @@ public:
 
 		data[1][0] = 0.0f;
 		data[1][1] = cos;
-		data[1][2] = sin;
+		data[1][2] = -sin;
 		data[1][3] = 0.0f;
 
 		data[2][0] = 0.0f;
-		data[2][1] = -sin;
+		data[2][1] = sin;
 		data[2][2] = cos;
 		data[2][3] = 0.0f;
 
@@ -151,17 +151,29 @@ public:
 		data[3][2] = 0.0f;
 		data[3][3] = 1.0f;
 	}
-	/*inline void SetAsRotateZ(float angle)
+	inline void rotationZ(float32 angle)
 	{
-		Clear();
-		float angleSin = sinf(angle), angleCos = cosf(angle);
-		data[0][0] = angleCos;
-		data[1][1] = angleCos;
-		data[0][1] = angleSin;
-		data[1][0] = -angleSin;
+		float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
+		data[0][0] = cos;
+		data[0][1] = -sin;
+		data[0][2] = 0.0f;
+		data[0][3] = 0.0f;
+
+		data[1][0] = sin;
+		data[1][1] = cos;
+		data[1][2] = 0.0f;
+		data[1][3] = 0.0f;
+
+		data[2][0] = 0.0f;
+		data[2][1] = 0.0f;
 		data[2][2] = 1.0f;
+		data[2][3] = 0.0f;
+
+		data[3][0] = 0.0f;
+		data[3][1] = 0.0f;
+		data[3][2] = 0.0f;
 		data[3][3] = 1.0f;
-	}*/
+	}
 	inline void perspective(float32 fov, float32 aspect, float32 zNear, float32 zFar)
 	{
 		float32 yScale = 1.0f / Math::Tan(fov / 2.0f);
@@ -187,9 +199,9 @@ public:
 		data[3][2] = -zNear * zFar / (zFar - zNear);
 		data[3][3] = 0.0f;
 	}
-	inline void lookAt(const float32x3& eye, const float32x3& at, const float32x3& up)
+	inline void lookAtCentered(const float32x3& eye, const float32x3& centeredAt, const float32x3& up)
 	{
-		float32x3 zaxis = VectorMath::Normalize(eye - at);
+		float32x3 zaxis = -VectorMath::Normalize(centeredAt);
 		float32x3 xaxis = VectorMath::Normalize(VectorMath::Cross(up, zaxis));
 		float32x3 yaxis = VectorMath::Cross(zaxis, xaxis);
 
@@ -212,6 +224,10 @@ public:
 		data[3][1] = VectorMath::Dot(yaxis, eye);
 		data[3][2] = VectorMath::Dot(zaxis, eye);
 		data[3][3] = 1.0f;
+	}
+	inline void lookAt(const float32x3& eye, const float32x3& at, const float32x3& up)
+	{
+		lookAtCentered(eye, at - eye, up);
 	}
 
 	static inline Matrix4x4 Identity()
@@ -244,6 +260,12 @@ public:
 		result.scale(x, y, z);
 		return result;
 	}
+	static inline Matrix4x4 Scale(float32x3 vector)
+	{
+		Matrix4x4 result;
+		result.scale(vector.x, vector.y, vector.z);
+		return result;
+	}
 	static inline Matrix4x4 RotationX(float32 angle)
 	{
 		Matrix4x4 result;
@@ -256,6 +278,12 @@ public:
 		result.rotationY(angle);
 		return result;
 	}
+	static inline Matrix4x4 RotationZ(float32 angle)
+	{
+		Matrix4x4 result;
+		result.rotationZ(angle);
+		return result;
+	}
 	static inline Matrix4x4 Perspective(float32 fov, float32 aspect, float32 zNear, float32 zFar)
 	{
 		Matrix4x4 result;
@@ -266,6 +294,12 @@ public:
 	{
 		Matrix4x4 result;
 		result.lookAt(eye, at, up);
+		return result;
+	}
+	static inline Matrix4x4 LookAtCentered(const float32x3& eye, const float32x3& centeredAt, const float32x3& up)
+	{
+		Matrix4x4 result;
+		result.lookAtCentered(eye, centeredAt, up);
 		return result;
 	}
 };

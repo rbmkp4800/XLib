@@ -16,6 +16,7 @@ public:
 
 	void destroy();
 
+	inline void* getHandle() { return handle; }
 	inline bool isInitialized() { return handle ? true : false; }
 };
 
@@ -68,6 +69,7 @@ public:
 	}
 
 	static void Sleep(uint32 milliseconds);
+	static void Switch();
 
 	template <typename Type, uint32 count>
 	static inline void WaitAll(Type(&waitables)[count], uint32 waitableCount)

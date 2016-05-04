@@ -42,8 +42,6 @@ private:
 		static uint16 And(volatile uint16* target, uint16 value);
 		static uint16 Or(volatile uint16* target, uint16 value);
 		static uint16 Xor(volatile uint16* target, uint16 value);
-		static uint16 Load(volatile uint16* target);
-		static void Store(volatile uint16* target, uint16 value);
 	};
 	template <> struct Core<sizeof(uint32)> abstract
 	{
@@ -58,8 +56,6 @@ private:
 		static uint32 And(volatile uint32* target, uint32 value);
 		static uint32 Or(volatile uint32* target, uint32 value);
 		static uint32 Xor(volatile uint32* target, uint32 value);
-		static uint32 Load(volatile uint32* target);
-		static void Store(volatile uint32* target, uint32 value);
 	};
 	template <> struct Core<sizeof(uint64)> abstract
 	{
@@ -74,8 +70,6 @@ private:
 		static uint64 And(volatile uint64* target, uint64 value);
 		static uint64 Or(volatile uint64* target, uint64 value);
 		static uint64 Xor(volatile uint64* target, uint64 value);
-		static uint64 Load(volatile uint64* target);
-		static void Store(volatile uint64* target, uint64 value);
 	};
 
 public:
@@ -88,8 +82,8 @@ public:
 	template <typename Type> static inline bool CompareExchange(volatile Type& target, Type exchange, Type comparand) { return Core<sizeof(Type)>::CompareExchange((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(exchange), Core<sizeof(Type)>::Type(comparand)); }
 	template <typename Type> static inline Type Increment(volatile Type& target)	{ return Core<sizeof(Type)>::Increment	((Core<sizeof(Type)>::Type*)&target); }
 	template <typename Type> static inline Type Decrement(volatile Type& target)	{ return Core<sizeof(Type)>::Decrement	((Core<sizeof(Type)>::Type*)&target); }
-	template <typename Type> static inline Type Load(volatile Type& target)			{ return Core<sizeof(Type)>::Load		((Core<sizeof(Type)>::Type*)&target); }
-	template <typename Type> static inline void Store(volatile Type& target, Type value) { Core<sizeof(Type)>::Store((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+	template <typename Type> static inline Type Load(volatile Type& target) { return target; }
+	template <typename Type> static inline void Store(volatile Type& target, Type value) { target = value; }
 	template <typename Type> static inline Type LoadAcquire(volatile Type& target)
 	{
 		FenceAcquire();
@@ -124,7 +118,7 @@ struct Atomic
 	inline Type exchange(Type a) { return Atomics::Exchange(value, a); }
 	inline Type increment() { return Atomics::Increment(value); }
 	inline Type decrement() { return Atomics::Decrement(value); }
-	inline Type compareExchange(Type a) { return Atomics::CompareExchange(value, a); }
+	inline Type compareExchange(Type exchange, Type comparand) { return Atomics::CompareExchange(value, exchange, comparand); }
 	/*inline Type and() { return Atomics::And(value); }
 	inline Type or() { return Atomics::Or(value); }
 	inline Type xor() { return Atomics::Xor(value); }*/

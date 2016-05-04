@@ -3,11 +3,8 @@
 
 #include "XLib.System.Window.h"
 
-static constexpr wchar windowClassName[] = L"XLib.Window";
-
 CreationArgs creationArgs(uint16 x, uint16 y) {	return { x, y }; }
 ResizingArgs resizingArgs(uint16 x, uint16 y) { return { x, y }; }
-KeyEventArgs keyEventArgs(VirtualKey key) { return { key }; }
 MouseState mouseState(WPARAM wParam, LPARAM lParam)
 {
 	return { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam),
@@ -16,21 +13,20 @@ MouseState mouseState(WPARAM wParam, LPARAM lParam)
 
 namespace XLib_Internal
 {
-	class WindowInternal abstract final
+	struct WindowInternal abstract final
 	{
-	public:
 		static LRESULT __stdcall WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			Window *window = nullptr;
+			WindowBase *window = nullptr;
 			if (message == WM_NCCREATE)
 			{
 				CREATESTRUCT *createStruct = (CREATESTRUCT*)lParam;
-				window = (Window*)createStruct->lpCreateParams;
+				window = (WindowBase*)createStruct->lpCreateParams;
 				SetWindowLongPtr(hWnd, GWLP_USERDATA, LONG_PTR(window));
 			}
 			else
 			{
-				window = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+				window = (WindowBase*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 			}
 
 			switch (message)
@@ -62,11 +58,11 @@ namespace XLib_Internal
 					window->onResize(resizingArgs(LOWORD(lParam), HIWORD(lParam)));
 
 				case WM_KEYDOWN:
-					window->onKeyDown(keyEventArgs(VirtualKey(wParam)));
+					window->onKeyboard(VirtualKey(wParam), true);
 					break;
 
 				case WM_KEYUP:
-					window->onKeyUp(keyEventArgs(VirtualKey(wParam)));
+					window->onKeyboard(VirtualKey(wParam), false);
 					break;
 
 				case WM_MOUSEMOVE:
@@ -74,19 +70,19 @@ namespace XLib_Internal
 					break;
 
 				case WM_LBUTTONDOWN:
-					window->onMouseButtonDown(mouseState(wParam, lParam), MouseButton::Left );
+					window->onMouseButton(mouseState(wParam, lParam), MouseButton::Left, true);
 					break;
 
 				case WM_LBUTTONUP:
-					window->onMouseButtonUp(mouseState(wParam, lParam), MouseButton::Left);
+					window->onMouseButton(mouseState(wParam, lParam), MouseButton::Left, false);
 					break;
 
 				case WM_RBUTTONDOWN:
-					window->onMouseButtonDown(mouseState(wParam, lParam), MouseButton::Right);
+					window->onMouseButton(mouseState(wParam, lParam), MouseButton::Right, true);
 					break;
 
 				case WM_RBUTTONUP:
-					window->onMouseButtonUp(mouseState(wParam, lParam), MouseButton::Right);
+					window->onMouseButton(mouseState(wParam, lParam), MouseButton::Right, false);
 					break;
 
 				case WM_MOUSEWHEEL:
@@ -104,20 +100,21 @@ namespace XLib_Internal
 	};
 }
 
-Window::Window() : handle(nullptr) {}
-Window::~Window()
+WindowBase::WindowBase() : handle(nullptr) {}
+WindowBase::~WindowBase()
 {
 	if (handle)
 	{
 		destroy();
-		dispatchAll();
 		handle = nullptr;
 	}
 }
 
-void Window::create(uint16 width, uint16 height, wchar* title)
+void WindowBase::create(uint16 width, uint16 height, wchar* title, bool visible)
 {
 	HINSTANCE hInstance = GetModuleHandle(nullptr);
+
+	static constexpr wchar windowClassName[] = L"XLib.Window";
 
 	static bool windowClassRegistered = false;
 	if (!windowClassRegistered)
@@ -141,59 +138,30 @@ void Window::create(uint16 width, uint16 height, wchar* title)
 	RECT rect = { 0, 0, LONG(width), LONG(height) };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 
-	CreateWindow(windowClassName, title, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, hInstance, this);
+	CreateWindow(windowClassName, title, WS_OVERLAPPEDWINDOW | (visible ?  WS_VISIBLE : 0) | WS_CLIPCHILDREN,
+		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
+		nullptr, nullptr, hInstance, this);
 }
-void Window::show()
-{
-	ShowWindow(HWND(handle), SW_SHOW);
-}
-void Window::hide()
-{
-	ShowWindow(HWND(handle), SW_HIDE);
-}
-void Window::destroy()
-{
-	DestroyWindow(HWND(handle));
-}
+void WindowBase::show(bool state) { ShowWindow(HWND(handle), state ? SW_SHOW : SW_HIDE); }
+void WindowBase::setFocus() { SetFocus(HWND(handle)); }
+void WindowBase::destroy() { DestroyWindow(HWND(handle)); }
+bool WindowBase::isOpened() { return IsWindow(HWND(handle)) ? true : false; }
 
-bool Window::dispatchPending()
+void WindowBase::DispatchPending()
 {
-	if (handle)
+	MSG message = { 0 };
+	while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
 	{
-		MSG message = { 0 };
-		while (PeekMessage(&message, HWND(handle), 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&message);
-			DispatchMessage(&message);
-		}
-		if (!IsWindow(HWND(handle)))
-		{
-			handle = nullptr;
-			return false;
-		}
-		return true;
+		TranslateMessage(&message);
+		DispatchMessage(&message);
 	}
-	return false;
 }
-void Window::dispatchAll()
+void WindowBase::DispatchAll()
 {
-	if (handle)
+	MSG message = { 0 };
+	while (GetMessage(&message, nullptr, 0, 0))
 	{
-		MSG message = { 0 };
-		for (;;)
-		{
-			BOOL result = GetMessage(&message, HWND(handle), 0, 0);
-			if (result == 0)
-				break;
-			if (result == -1)
-			{
-				if (!IsWindow(HWND(handle)))
-					handle = nullptr;
-				break;
-			}
-			TranslateMessage(&message);
-			DispatchMessage(&message);
-		}
+		TranslateMessage(&message);
+		DispatchMessage(&message);
 	}
 }

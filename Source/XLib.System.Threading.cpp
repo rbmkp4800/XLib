@@ -47,6 +47,6 @@ bool _private::WaitAll(void** handles, uint32 handleCount)
 }
 
 void Thread::Sleep(uint32 milliseconds)
-{
-	::Sleep(milliseconds);
-}
+	{ ::Sleep(milliseconds); }
+void Thread::Switch()
+	{ SwitchToThread(); }

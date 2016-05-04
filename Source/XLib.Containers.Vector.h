@@ -59,7 +59,7 @@ public:
 	}
 	void compact() { buffer.resize(vectorSize); }
 
-	inline operator Type*() const { return buffer; }
+	inline operator Type*() { return buffer; }
 	inline uint32 size() const { return vectorSize; }
 	inline uint32 byteSize() const { return vectorSize * sizeof(Type); }
 	inline bool isEmpty() const { return vectorSize ? false : true; }
@@ -67,6 +67,6 @@ public:
 	template <typename OtherType>
 	inline OtherType to() { return OtherType(ptr); }
 
-	inline Type* begin() const { return buffer; }
-	inline Type* end() const { return buffer + vectorSize; }
+	inline Type* begin() { return buffer; }
+	inline Type* end() { return (Type*)buffer + vectorSize; }
 };

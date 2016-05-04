@@ -1,13 +1,15 @@
 #include <Windows.h>
 
-#include "XLib.Application.h"
+#include "XLib.Program.h"
 
 int main()
 {
-	return Application::Run();
+	Program::Run();
+	return 0;
 }
 
 int __stdcall WinMain(HINSTANCE, HINSTANCE, char*, int)
 {
-	return Application::Run();
+	Program::Run();
+	return 0;
 }

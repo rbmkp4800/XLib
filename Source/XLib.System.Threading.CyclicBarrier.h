@@ -1,5 +1,6 @@
 #pragma once
 
+#include "XLib.Types.h"
 #include "XLib.NonCopyable.h"
 #include "XLib.System.Threading.Event.h"
 #include "XLib.System.Threading.Atomics.h"

@@ -49,10 +49,26 @@
     </ClInclude>
     <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
     <ClInclude Include="Source\XLib.Heap.h" />
-    <ClInclude Include="Source\XLib.Application.h" />
     <ClInclude Include="Source\XLib.Float.Conversion.h" />
     <ClInclude Include="Source\XLib.Float.Consts.h" />
     <ClInclude Include="Source\XLib.Vectors.Math.h" />
+    <ClInclude Include="Source\XLib.System.Window.Controls.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.CyclicQueue.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.AsyncIO.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Program.h" />
+    <ClInclude Include="Source\XLib.System.Network.Socket.h">
+      <Filter>System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Network.h">
+      <Filter>System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Delegate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />
@@ -77,7 +93,19 @@
       <Filter>System\Threading</Filter>
     </ClCompile>
     <ClCompile Include="Source\XLib.Heap.cpp" />
-    <ClCompile Include="Source\XLib.Application.cpp" />
+    <ClCompile Include="Source\XLib.System.Window.Controls.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.AsyncIO.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.Program.cpp" />
+    <ClCompile Include="Source\XLib.System.Network.Socket.cpp">
+      <Filter>System\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Network.cpp">
+      <Filter>System\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">
@@ -91,6 +119,9 @@
     </Filter>
     <Filter Include="System\Threading">
       <UniqueIdentifier>{43c90392-b461-4a3c-b74a-9eb797e20393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Network">
+      <UniqueIdentifier>{d5be2868-222d-4843-a6b4-f497188ebeca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

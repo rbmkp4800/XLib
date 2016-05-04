@@ -22,7 +22,8 @@
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
     <ClInclude Include="Source\XLib.Allocator.h" />
-    <ClInclude Include="Source\XLib.Application.h" />
+    <ClInclude Include="Source\XLib.Delegate.h" />
+    <ClInclude Include="Source\XLib.Program.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
     <ClInclude Include="Source\XLib.Containers.List.h" />
     <ClInclude Include="Source\XLib.Float.Consts.h" />
@@ -35,9 +36,13 @@
     <ClInclude Include="Source\XLib.Math.h" />
     <ClInclude Include="Source\XLib.Memory.h" />
     <ClInclude Include="Source\XLib.Random.h" />
+    <ClInclude Include="Source\XLib.System.AsyncIO.h" />
+    <ClInclude Include="Source\XLib.System.Network.h" />
+    <ClInclude Include="Source\XLib.System.Network.Socket.h" />
     <ClInclude Include="Source\XLib.System.Threading.Atomics.h" />
     <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h" />
     <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h" />
+    <ClInclude Include="Source\XLib.System.Threading.CyclicQueue.h" />
     <ClInclude Include="Source\XLib.System.Threading.Event.h" />
     <ClInclude Include="Source\XLib.System.Threading.h" />
     <ClInclude Include="Source\XLib.System.Timer.h" />
@@ -47,18 +52,23 @@
     <ClInclude Include="Source\XLib.Vectors.Arithmetics.h" />
     <ClInclude Include="Source\XLib.Vectors.h" />
     <ClInclude Include="Source\XLib.Vectors.Math.h" />
+    <ClInclude Include="Source\XLib.System.Window.Controls.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\XLib.Application.cpp" />
+    <ClCompile Include="Source\XLib.Program.cpp" />
     <ClCompile Include="Source\XLib.Heap.cpp" />
     <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
+    <ClCompile Include="Source\XLib.System.AsyncIO.cpp" />
+    <ClCompile Include="Source\XLib.System.Network.cpp" />
+    <ClCompile Include="Source\XLib.System.Network.Socket.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Event.cpp" />
     <ClCompile Include="Source\XLib.System.Timer.cpp" />
+    <ClCompile Include="Source\XLib.System.Window.Controls.cpp" />
     <ClCompile Include="Source\XLib.System.Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -125,6 +135,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;Mswsock.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -155,6 +168,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;Mswsock.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

@@ -5,7 +5,7 @@
 
 enum class VirtualKey : uint8
 {
-	Escape = 0x1b,
+	Escape = 0x1B,
 	Backspace = 0x08,
 	MouseLeftButton = 0x01,
 	MouseMiddleButton = 0x04,
@@ -15,6 +15,7 @@ enum class VirtualKey : uint8
 	Right = 0x27,
 	Down = 0x28,
 	Space = 0x20,
+	Delete = 0x2E,
 };
 enum class MouseButton : uint8
 {
@@ -31,10 +32,6 @@ struct ResizingArgs
 {
 	uint16 width, height;
 };
-struct KeyEventArgs
-{
-	VirtualKey key;
-};
 struct MouseState
 {
 	sint16 x, y;
@@ -43,10 +40,10 @@ struct MouseState
 
 namespace XLib_Internal
 {
-	class WindowInternal;
+	struct WindowInternal;
 }
 
-class Window : public NonCopyable
+class WindowBase : public NonCopyable
 {
 	friend XLib_Internal::WindowInternal;
 
@@ -58,24 +55,23 @@ protected:
 	virtual void onRedraw() {}
 	virtual void onDestroy() {}
 	virtual void onResize(ResizingArgs& args) {}
-	virtual void onKeyDown(KeyEventArgs& args) {}
-	virtual void onKeyUp(KeyEventArgs& args) {}
-	virtual void onMouseMove(MouseState& state) {}
-	virtual void onMouseButtonDown(MouseState& state, MouseButton button) {}
-	virtual void onMouseButtonUp(MouseState& state, MouseButton button) {}
-	virtual void onMouseWheel(MouseState& state, float32 delta) {}
+	virtual void onKeyboard(VirtualKey key, bool state) {}
+	virtual void onMouseMove(MouseState& mouseState) {}
+	virtual void onMouseButton(MouseState& mouseState, MouseButton button, bool state) {}
+	virtual void onMouseWheel(MouseState& mouseState, float32 delta) {}
 
 public:
-	Window();
-	~Window();
+	WindowBase();
+	~WindowBase();
 
-	void create(uint16 width, uint16 height, wchar* title);
-	void show();
-	void hide();
+	void create(uint16 width, uint16 height, wchar* title, bool visible = true);
+	void show(bool state);
+	void setFocus();
 	void destroy();
+	bool isOpened();
 
-	bool dispatchPending();
-	void dispatchAll();
+	static void DispatchPending();
+	static void DispatchAll();
 
 	inline void* getHandle() const { return handle; }
 };

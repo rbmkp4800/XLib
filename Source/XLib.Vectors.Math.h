@@ -29,4 +29,7 @@ struct VectorMath abstract final
 			a.z * b.x - a.x * b.z,
 			a.x * b.y - a.y * b.x);
 	}
+
+	static inline float32x3 SphericalCoords(float32x2 angles) { return float32x3( Math::Sin(angles.x) * Math::Cos(angles.y), Math::Sin(angles.y), Math::Cos(angles.x) * Math::Cos(angles.y)); }
+	static inline float32x2 PolarCoords(float32 angle) { return float32x2(Math::Sin(angle), Math::Cos(angle)); }
 };

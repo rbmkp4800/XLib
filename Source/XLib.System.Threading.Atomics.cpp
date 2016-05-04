@@ -12,8 +12,10 @@ bool Atomics::Core<sizeof(uint32)>::CompareExchange(volatile uint32* target, uin
 uint32 Atomics::Core<sizeof(uint32)>::And(volatile uint32* target, uint32 value) { return _InterlockedAnd((volatile LONG*)target, value); }
 uint32 Atomics::Core<sizeof(uint32)>::Or(volatile uint32* target, uint32 value) { return _InterlockedOr((volatile LONG*)target, value); }
 uint32 Atomics::Core<sizeof(uint32)>::Xor(volatile uint32* target, uint32 value) { return _InterlockedXor((volatile LONG*)target, value); }
-uint32 Atomics::Core<sizeof(uint32)>::Load(volatile uint32* target) { return *target; }
-void Atomics::Core<sizeof(uint32)>::Store(volatile uint32* target, uint32 value) { *target = value; }
+
+uint16 Atomics::Core<sizeof(uint16)>::Increment(volatile uint16* target) { return _InterlockedIncrement16((volatile SHORT*)target); }
+uint16 Atomics::Core<sizeof(uint16)>::Decrement(volatile uint16* target) { return _InterlockedDecrement16((volatile SHORT*)target); }
 
 void Atomics::FenceAcquire() { _ReadBarrier(); }
 void Atomics::FenceRelease() { _WriteBarrier(); }
+void Atomics::FenceFull() { MemoryBarrier(); }
