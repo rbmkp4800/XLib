@@ -2,7 +2,7 @@
 
 #include "XLib.Types.h"
 
-template <typename type, uintptr size> constexpr uintptr countof(type(&)[size]) { return size; }
+template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
 
 template <typename type> struct RemoveReference abstract final { using Type = type; };
 template <typename type> struct RemoveReference<type&> abstract final { using Type = type; };
@@ -38,7 +38,7 @@ template <typename type> constexpr inline type sqr(type val) { return val * val;
 template <typename type> constexpr inline type abs(type val) { return val >= type(0) ? val : -val; }
 template <typename type> constexpr inline type min(type val1, type val2) { return val1 < val2 ? val1 : val2; }
 template <typename type> constexpr inline type max(type val1, type val2) { return val1 > val2 ? val1 : val2; }
-//template <typename type> static constexpr inline type divceil(type val, type divider) { return (val - 1) / divider + 1; }
+template <typename type> constexpr inline type intdivceil(type val, type divider) { return (val - 1) / divider + 1; }
 
 template <typename type>
 constexpr inline type clamp(type val, type _min, type _max)

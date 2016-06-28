@@ -69,6 +69,12 @@
       <Filter>System\Network</Filter>
     </ClInclude>
     <ClInclude Include="Source\XLib.Delegate.h" />
+    <ClInclude Include="Source\XLib.System.Pipes.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.FileHandle.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />

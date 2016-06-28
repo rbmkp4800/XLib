@@ -5,6 +5,7 @@
 #include "XLib.Delegate.h"
 #include "XLib.System.Network.h"
 #include "XLib.System.AsyncIO.h"
+#include "XLib.System.FileHandle.h"
 
 enum class ProtocolType : uint32
 {
@@ -26,16 +27,15 @@ struct Sockets abstract final
 };
 
 using TransferCompletedHandler = Delegate<void, bool, uint32, uintptr>;
+using SocketAcceptedHandler = Delegate<void, bool, TCPSocket&, IPAddress, uintptr>;
 
-class Socket abstract : public NonCopyable
+class Socket abstract : public ISystemFileHandle
 {
 	friend class TCPSocket;
 	friend class TCPListenSocket;
 	friend class UDPSocket;
 
 private:
-	void *handle;
-
 	inline void fromHandle(void* _handle)
 	{
 		destroy();
@@ -51,11 +51,6 @@ private:
 	}
 
 public:
-	inline Socket() : handle(nullptr) {}
-	~Socket();
-
-	inline void destroy() { this->~Socket(); }
-
 	inline Socket(Socket&& that)
 	{
 		handle = that.handle;
@@ -83,18 +78,16 @@ public:
 	bool receiveAll(void* buffer, uint32 size);
 
 	//bool asyncConnect();
-	void asyncSend(void* buffer, uint32 size, HostedAsyncData& asyncData,
+	void asyncSend(void* buffer, uint32 size, HostedAsyncTask& task,
 		TransferCompletedHandler handler, uintptr key = 0);
-	void asyncReceive(void* buffer, uint32 size, HostedAsyncData& asyncData,
+	void asyncReceive(void* buffer, uint32 size, HostedAsyncTask& task,
 		TransferCompletedHandler handler, bool waitAll = false, uintptr key = 0);
 };
 
 class TCPListenSocket : public Socket
 {
 public:
-	using ClientAcceptedHandler = Delegate<void, bool, TCPSocket&, IPAddress, uintptr>;
-
-	class HostedAsyncData : public ::HostedAsyncData
+	class HostedAsyncTask : public ::HostedAsyncTask
 	{
 		friend AsyncIOHost;
 		friend TCPListenSocket;
@@ -120,8 +113,8 @@ public:
 	bool start(uint32 backlog = 5);
 
 	bool accept(TCPSocket& socket, IPAddress& address);
-	void asyncAccept(TCPListenSocket::HostedAsyncData& asyncData,
-		ClientAcceptedHandler handler, uintptr key = 0);
+	void asyncAccept(TCPListenSocket::HostedAsyncTask& task,
+		SocketAcceptedHandler handler, uintptr key = 0);
 };
 
 class UDPSocket : public Socket
@@ -131,6 +124,6 @@ public:
 
 	bool sendTo(void* data, uint32 size, IPAddress address, uint16 port);
 	bool receiveFrom(void* buffer, uint32 bufferSize, uint32& datagramLength, IPAddress& address, uint16& port);
-	void asyncSendTo(void* data, uint32 size, IPAddress address, uint16 port, HostedAsyncData& asyncData);
-	void asyncReceiveFrom(HostedAsyncData& asyncData);
+	void asyncSendTo(void* data, uint32 size, IPAddress address, uint16 port, HostedAsyncTask& task);
+	void asyncReceiveFrom(HostedAsyncTask& task);
 };

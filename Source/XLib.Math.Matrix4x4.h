@@ -196,7 +196,7 @@ public:
 
 		data[3][0] = 0.0f;
 		data[3][1] = 0.0f;
-		data[3][2] = -zNear * zFar / (zFar - zNear);
+		data[3][2] = zNear * zFar / (zNear - zFar);
 		data[3][3] = 0.0f;
 	}
 	inline void lookAtCentered(const float32x3& eye, const float32x3& centeredAt, const float32x3& up)

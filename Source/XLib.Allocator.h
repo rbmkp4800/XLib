@@ -3,20 +3,19 @@
 #include "XLib.Types.h"
 #include "XLib.Containers.Vector.h"
 
+enum class PoolAllocatorPolicy
+{
+	HighFragmentation,	// remove O(1)
+	LowFragmentation,	// remove O(logN), N - internal free blocks count
+};
+
+template <uint32 blockSize, PoolAllocatorPolicy policy>
+class PoolAllocator;
+
 template <uint32 blockSize>
-class Allocator
+class PoolAllocator<blockSize, PoolAllocatorPolicy::HighFragmentation>
 {
 private:
-	static constexpr uint32 initialPoolsBufferSize = 4;
-
-	struct Pool
-	{
-		byte *ptr;
-		uint32 size;
-		uint32 usedSize;
-	};
-
-	Vector<Pool, initialPoolsBufferSize> pools;
 
 public:
 	void* allocate();

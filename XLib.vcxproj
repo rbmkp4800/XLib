@@ -37,8 +37,10 @@
     <ClInclude Include="Source\XLib.Memory.h" />
     <ClInclude Include="Source\XLib.Random.h" />
     <ClInclude Include="Source\XLib.System.AsyncIO.h" />
+    <ClInclude Include="Source\XLib.System.FileHandle.h" />
     <ClInclude Include="Source\XLib.System.Network.h" />
     <ClInclude Include="Source\XLib.System.Network.Socket.h" />
+    <ClInclude Include="Source\XLib.System.Pipes.h" />
     <ClInclude Include="Source\XLib.System.Threading.Atomics.h" />
     <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h" />
     <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h" />

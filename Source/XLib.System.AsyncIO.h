@@ -4,8 +4,9 @@
 #include "XLib.NonCopyable.h"
 #include "XLib.Delegate.h"
 #include "XLib.Memory.h"
+#include "XLib.System.FileHandle.h"
 
-class HostedAsyncData : public NonCopyable
+class HostedAsyncTask : public NonCopyable
 {
 	friend class AsyncIOHost;
 
@@ -29,6 +30,9 @@ private:
 
 	inline void clear()
 		{ Memory::Set(this, 0, sizeof(*this)); }
+
+public:
+	void cancel();
 };
 
 class AsyncIOHost : public NonCopyable
@@ -43,8 +47,7 @@ public:
 	void initialize();
 	inline void destroy() { this->~AsyncIOHost(); }
 
-	void associate(class Socket& socket);
-	//void associate( file handle );
+	void associate(ISystemFileHandle& handle);
 
 	void dispatchAll();
 	void dispatchPending();

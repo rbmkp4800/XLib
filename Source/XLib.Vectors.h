@@ -85,3 +85,6 @@ using rects32 = rectvar<sint32>;
 using rects64 = rectvar<sint64>;
 using rectf32 = rectvar<float32>;
 using rectf64 = rectvar<float64>;
+
+template <typename Type> inline vec2<Type> xy(const vec4<Type>& v) { return vec2<Type>(v.x, v.y); }
+template <typename Type> inline vec3<Type> xyz(const vec4<Type>& v) { return vec3<Type>(v.x, v.y, v.z); }

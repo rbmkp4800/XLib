@@ -5,7 +5,7 @@
 #include "XLib.NonCopyable.h"
 #include "XLib.Heap.h"
 
-template <typename Type, uint32 initialBufferSegmentCount = 16>
+template <typename Type, uint32 initialBufferSize = 16>
 class Vector : public NonCopyable
 {
 private:
@@ -19,7 +19,7 @@ private:
 			if (bufferSize)
 				bufferSize = max(vectorSize * 2, minNewSize);
 			else
-				bufferSize = max(initialBufferSegmentCount, minNewSize);
+				bufferSize = max(initialBufferSize, minNewSize);
 			buffer.resize(bufferSize);
 		}
 	}
