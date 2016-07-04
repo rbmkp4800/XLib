@@ -22,7 +22,10 @@
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
     <ClInclude Include="Source\XLib.Allocator.h" />
+    <ClInclude Include="Source\XLib.Containers.CyclicQueue.h" />
+    <ClInclude Include="Source\XLib.Debug.h" />
     <ClInclude Include="Source\XLib.Delegate.h" />
+    <ClInclude Include="Source\XLib.Math.Matrix3x4.h" />
     <ClInclude Include="Source\XLib.Program.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
     <ClInclude Include="Source\XLib.Containers.List.h" />
@@ -57,14 +60,13 @@
     <ClInclude Include="Source\XLib.System.Window.Controls.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\XLib.Debug.cpp" />
     <ClCompile Include="Source\XLib.Program.cpp" />
     <ClCompile Include="Source\XLib.Heap.cpp" />
     <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
-    <ClCompile Include="Source\XLib.System.AsyncIO.cpp" />
     <ClCompile Include="Source\XLib.System.Network.cpp" />
-    <ClCompile Include="Source\XLib.System.Network.Socket.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.Atomics.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.cpp" />
     <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp" />

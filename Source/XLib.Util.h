@@ -3,6 +3,7 @@
 #include "XLib.Types.h"
 
 template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
+#define offsetof(type, field) uintptr(((type*)nullptr)->field)
 
 template <typename type> struct RemoveReference abstract final { using Type = type; };
 template <typename type> struct RemoveReference<type&> abstract final { using Type = type; };

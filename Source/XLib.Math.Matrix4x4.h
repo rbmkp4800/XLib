@@ -11,6 +11,9 @@ class Matrix4x4
 public:
 	float32 data[4][4];
 
+	inline float32* operator [] (uint32 row) { return data[row]; }
+	inline const float32* operator [] (uint32 row) const { return data[row]; }
+
 	inline void clear()
 	{
 		data[0][0] = 0.0f;
@@ -199,9 +202,9 @@ public:
 		data[3][2] = zNear * zFar / (zNear - zFar);
 		data[3][3] = 0.0f;
 	}
-	inline void lookAtCentered(const float32x3& eye, const float32x3& centeredAt, const float32x3& up)
+	inline void lookAtCentered(const float32x3& position, const float32x3& centeredTarget, const float32x3& up)
 	{
-		float32x3 zaxis = -VectorMath::Normalize(centeredAt);
+		float32x3 zaxis = -VectorMath::Normalize(centeredTarget);
 		float32x3 xaxis = VectorMath::Normalize(VectorMath::Cross(up, zaxis));
 		float32x3 yaxis = VectorMath::Cross(zaxis, xaxis);
 
@@ -220,14 +223,14 @@ public:
 		data[2][2] = zaxis.z;
 		data[2][3] = 0.0f;
 
-		data[3][0] = VectorMath::Dot(xaxis, eye);
-		data[3][1] = VectorMath::Dot(yaxis, eye);
-		data[3][2] = VectorMath::Dot(zaxis, eye);
+		data[3][0] = VectorMath::Dot(xaxis, position);
+		data[3][1] = VectorMath::Dot(yaxis, position);
+		data[3][2] = VectorMath::Dot(zaxis, position);
 		data[3][3] = 1.0f;
 	}
-	inline void lookAt(const float32x3& eye, const float32x3& at, const float32x3& up)
+	inline void lookAt(const float32x3& position, const float32x3& target, const float32x3& up)
 	{
-		lookAtCentered(eye, at - eye, up);
+		lookAtCentered(position, target - position, up);
 	}
 
 	static inline Matrix4x4 Identity()
@@ -290,43 +293,69 @@ public:
 		result.perspective(fov, aspect, zNear, zFar);
 		return result;
 	}
-	static inline Matrix4x4 LookAt(const float32x3& eye, const float32x3& at, const float32x3& up)
+	static inline Matrix4x4 LookAt(const float32x3& position, const float32x3& target, const float32x3& up)
 	{
 		Matrix4x4 result;
-		result.lookAt(eye, at, up);
+		result.lookAt(position, target, up);
 		return result;
 	}
-	static inline Matrix4x4 LookAtCentered(const float32x3& eye, const float32x3& centeredAt, const float32x3& up)
+	static inline Matrix4x4 LookAtCentered(const float32x3& position, const float32x3& centerdTarget, const float32x3& up)
 	{
 		Matrix4x4 result;
-		result.lookAtCentered(eye, centeredAt, up);
+		result.lookAtCentered(position, centerdTarget, up);
 		return result;
 	}
 };
 
-inline Matrix4x4 operator * (const Matrix4x4& matrix1, const Matrix4x4& matrix2)
+/*inline Matrix4x4 operator * (const Matrix4x4& matrix1, const Matrix4x4& matrix2)
 {
 	Matrix4x4 result;
 	result.clear();
 	for (int i = 0; i < 4; i++)
 		for (int j = 0; j < 4; j++)
 			for (int k = 0; k < 4; k++)
-				result.data[j][i] += matrix1.data[k][i] * matrix2.data[j][k];
+				result[i][j] += matrix1[i][k] * matrix2[k][j];
+	return result;
+}*/
+
+inline Matrix4x4 operator * (const Matrix4x4& a, const Matrix4x4& b)
+{
+	Matrix4x4 result;
+	result[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
+	result[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1] + a[0][3] * b[3][1];
+	result[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2] + a[0][3] * b[3][2];
+	result[0][3] = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3] * b[3][3];
+
+	result[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0] + a[1][3] * b[3][0];
+	result[1][1] = a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1] + a[1][3] * b[3][1];
+	result[1][2] = a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2] + a[1][3] * b[3][2];
+	result[1][3] = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3] * b[3][3];
+
+	result[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0] + a[2][3] * b[3][0];
+	result[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1] + a[2][3] * b[3][1];
+	result[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2] + a[2][3] * b[3][2];
+	result[2][3] = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3] * b[3][3];
+
+	result[3][0] = a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + a[3][3] * b[3][0];
+	result[3][1] = a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + a[3][3] * b[3][1];
+	result[3][2] = a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + a[3][3] * b[3][2];
+	result[3][3] = a[3][0] * b[0][3] + a[3][1] * b[1][3] + a[3][2] * b[2][3] + a[3][3] * b[3][3];
 	return result;
 }
+
 inline float32x4 operator * (const float32x3& vector, const Matrix4x4& matrix)
 {
 	return float32x4(
-		vector.x * matrix.data[0][0] + vector.y * matrix.data[1][0] + vector.z * matrix.data[2][0] + matrix.data[3][0],
-		vector.x * matrix.data[0][1] + vector.y * matrix.data[1][1] + vector.z * matrix.data[2][1] + matrix.data[3][1],
-		vector.x * matrix.data[0][2] + vector.y * matrix.data[1][2] + vector.z * matrix.data[2][2] + matrix.data[3][2],
-		vector.x * matrix.data[0][3] + vector.y * matrix.data[1][3] + vector.z * matrix.data[2][3] + matrix.data[3][3]);
+		vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0] + matrix[3][0],
+		vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + matrix[3][1],
+		vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + matrix[3][2],
+		vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + matrix[3][3]);
 }
 inline float32x4 operator * (const float32x4& vector, const Matrix4x4& matrix)
 {
 	return float32x4(
-		vector.x * matrix.data[0][0] + vector.y * matrix.data[1][0] + vector.z * matrix.data[2][0] + vector.w * matrix.data[3][0],
-		vector.x * matrix.data[0][1] + vector.y * matrix.data[1][1] + vector.z * matrix.data[2][1] + vector.w * matrix.data[3][1],
-		vector.x * matrix.data[0][2] + vector.y * matrix.data[1][2] + vector.z * matrix.data[2][2] + vector.w * matrix.data[3][2],
-		vector.x * matrix.data[0][3] + vector.y * matrix.data[1][3] + vector.z * matrix.data[2][3] + vector.w * matrix.data[3][3]);
+		vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0] + vector.w * matrix[3][0],
+		vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + vector.w * matrix[3][1],
+		vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + vector.w * matrix[3][2],
+		vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + vector.w * matrix[3][3]);
 }

@@ -75,6 +75,9 @@
     <ClInclude Include="Source\XLib.System.FileHandle.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Matrix3x4.h" />
+    <ClInclude Include="Source\XLib.Containers.CyclicQueue.h" />
+    <ClInclude Include="Source\XLib.Debug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />
@@ -102,16 +105,11 @@
     <ClCompile Include="Source\XLib.System.Window.Controls.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\XLib.System.AsyncIO.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.Program.cpp" />
-    <ClCompile Include="Source\XLib.System.Network.Socket.cpp">
-      <Filter>System\Network</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.System.Network.cpp">
       <Filter>System\Network</Filter>
     </ClCompile>
+    <ClCompile Include="Source\XLib.Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">

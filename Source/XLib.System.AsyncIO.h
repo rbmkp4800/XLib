@@ -53,7 +53,7 @@ public:
 	void dispatchPending();
 	void quit();
 
-	void postMessage_socketReceiveCompleted(HostedAsyncData& asyncData,
+	void postMessage_socketReceiveCompleted(HostedAsyncTask& asyncTask,
 		uint32 transferredSize, uintptr key);
 
 	inline bool isInitialized() { return hIOCP ? true : false; }

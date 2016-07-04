@@ -9,24 +9,39 @@ struct vec2
 
 	vec2() = default;
 	constexpr inline vec2(type _x, type _y) : x(_x), y(_y) {}
+	template <typename type1> constexpr inline vec2(const vec2<type1>& a) : x(a.x), y(a.y) {}
 };
 
 template <typename type>
 struct vec3
 {
-	type x, y, z;
+	union
+	{
+		struct { type x, y, z; };
+		struct { vec2<type> xy; type z; };
+		struct { type x; vec2<type> yz; };
+	};
 
 	vec3() = default;
 	constexpr inline vec3(type _x, type _y, type _z) : x(_x), y(_y), z(_z) {}
+	constexpr inline vec3(vec2<type> _xy, type _z = type(0)) : xy(_xy), z(_z) {}
+	constexpr inline vec3(type _x, vec2<type> _yz) : x(_x), yz(_yz) {}
+	template <typename type1> constexpr inline vec3(const vec3<type1>& a) : x(a.x), y(a.y), z(a.z) {}
 };
 
 template <typename type>
 struct vec4
 {
-	type x, y, z, w;
+	union
+	{
+		struct { type x, y, z, w; };
+		struct { vec2<type> xy; type z, w; };
+		struct { vec3<type> xyz; type w; };
+	};
 
 	vec4() = default;
 	constexpr inline vec4(type _x, type _y, type _z, type _w) : x(_x), y(_y), z(_z), w(_w) {}
+	template <typename type1> constexpr inline vec4(const vec4<type1>& a) : x(a.x), y(a.y), z(a.z), w(a.w) {}
 };
 
 template <typename type1, typename type2> constexpr inline bool operator == (const vec2<type1>& a, const vec2<type2>& b) { return a.x == b.x && a.y == b.y; }
@@ -85,6 +100,3 @@ using rects32 = rectvar<sint32>;
 using rects64 = rectvar<sint64>;
 using rectf32 = rectvar<float32>;
 using rectf64 = rectvar<float64>;
-
-template <typename Type> inline vec2<Type> xy(const vec4<Type>& v) { return vec2<Type>(v.x, v.y); }
-template <typename Type> inline vec3<Type> xyz(const vec4<Type>& v) { return vec3<Type>(v.x, v.y, v.z); }

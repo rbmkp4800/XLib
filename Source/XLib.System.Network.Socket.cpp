@@ -64,12 +64,6 @@ bool Socket::bind(IPAddress address, uint16 port)
 	return result != SOCKET_ERROR;
 }
 
-Socket::~Socket()
-{
-	if (handle)
-		closesocket(SOCKET(handle));
-}
-
 //------------------------------------------------------------------------//
 //------------------------------- TCPSocket ------------------------------//
 
@@ -98,7 +92,7 @@ bool TCPSocket::receiveAll(void* buffer, uint32 size)
 	return result == 0;
 }
 
-void TCPSocket::asyncSend(void* buffer, uint32 size, HostedAsyncData& asyncData,
+void TCPSocket::asyncSend(void* buffer, uint32 size, HostedAsyncTask& asyncTask,
 	TransferCompletedHandler handler, uintptr key)
 {
 	asyncData.rawHandler = handler.toRaw();

@@ -5,6 +5,10 @@
 #include "XLib.System.Threading.Atomics.h"
 #include "XLib.System.Threading.Event.h"
 
+// TODO:
+//		1. swap front and back (wrong notation)
+//		2. add CyclicQueueStoratePolicy
+
 template <typename Type, uint32 sizeLog2, uint32 spinCount = 2000>
 class ThreadSafeCyclicQueue : public NonCopyable
 {

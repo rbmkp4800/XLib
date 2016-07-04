@@ -8,6 +8,9 @@ struct Matrix3x2
 {
 	float32 data[3][2];
 
+	inline float32* operator [] (uint32 row) { return data[row]; }
+	inline const float32* operator [] (uint32 row) const { return data[row]; }
+
 	inline void clear()
 	{
 		data[0][0] = 0.0f;
@@ -220,17 +223,17 @@ struct Matrix3x2
 inline float32x2 operator * (const float32x2& vector, const Matrix3x2& matrix)
 {
 	return float32x2(
-		matrix.data[0][0] * vector.x + matrix.data[1][0] * vector.y + matrix.data[2][0],
-		matrix.data[0][1] * vector.x + matrix.data[1][1] * vector.y + matrix.data[2][1]);
+		matrix[0][0] * vector.x + matrix[1][0] * vector.y + matrix[2][0],
+		matrix[0][1] * vector.x + matrix[1][1] * vector.y + matrix[2][1]);
 }
 inline Matrix3x2 operator * (const Matrix3x2& a, const Matrix3x2& b)
 {
 	Matrix3x2 result;
-	result.data[0][0] = a.data[0][0] * b.data[0][0] + a.data[1][0] * b.data[0][1];
-	result.data[0][1] = a.data[0][1] * b.data[0][0] + a.data[1][1] * b.data[0][1];
-	result.data[1][0] = a.data[0][0] * b.data[1][0] + a.data[1][0] * b.data[1][1];
-	result.data[1][1] = a.data[0][1] * b.data[1][0] + a.data[1][1] * b.data[1][1];
-	result.data[2][0] = a.data[0][0] * b.data[2][0] + a.data[1][0] * b.data[2][1] + a.data[2][0];
-	result.data[2][1] = a.data[0][1] * b.data[2][0] + a.data[1][1] * b.data[2][1] + a.data[2][1];
+	result[0][0] = a[0][0] * b[0][0] + a[1][0] * b[0][1];
+	result[0][1] = a[0][1] * b[0][0] + a[1][1] * b[0][1];
+	result[1][0] = a[0][0] * b[1][0] + a[1][0] * b[1][1];
+	result[1][1] = a[0][1] * b[1][0] + a[1][1] * b[1][1];
+	result[2][0] = a[0][0] * b[2][0] + a[1][0] * b[2][1] + a[2][0];
+	result[2][1] = a[0][1] * b[2][0] + a[1][1] * b[2][1] + a[2][1];
 	return result;
 }
