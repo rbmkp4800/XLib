@@ -35,9 +35,6 @@
     <ClInclude Include="Source\XLib.System.Threading.Atomics.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.System.Threading.CriticalSection.h">
-      <Filter>System\Threading</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
@@ -52,9 +49,6 @@
     <ClInclude Include="Source\XLib.Float.Conversion.h" />
     <ClInclude Include="Source\XLib.Float.Consts.h" />
     <ClInclude Include="Source\XLib.Vectors.Math.h" />
-    <ClInclude Include="Source\XLib.System.Window.Controls.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.System.Threading.CyclicQueue.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
@@ -69,15 +63,45 @@
       <Filter>System\Network</Filter>
     </ClInclude>
     <ClInclude Include="Source\XLib.Delegate.h" />
-    <ClInclude Include="Source\XLib.System.Pipes.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.System.FileHandle.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Source\XLib.Math.Matrix3x4.h" />
-    <ClInclude Include="Source\XLib.Containers.CyclicQueue.h" />
     <ClInclude Include="Source\XLib.Debug.h" />
+    <ClInclude Include="Source\XLib.StringWriter.h" />
+    <ClInclude Include="Source\XLib.Strings.h" />
+    <ClInclude Include="Source\XLib.PoolAllocator.h" />
+    <ClInclude Include="Source\XLib.Crypto.CRC.h" />
+    <ClInclude Include="Source\XLib.System.VirtualMemory.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.File.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.FileSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.NamedPipe.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Barrier.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.Lock.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.System.Threading.ReadersWriterLock.h">
+      <Filter>System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.MultiSequentialSet.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.BinaryHeap.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.CyclicQueue.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XLib.Math.cpp" />
@@ -95,21 +119,33 @@
     <ClCompile Include="Source\XLib.System.Threading.cpp">
       <Filter>System\Threading</Filter>
     </ClCompile>
-    <ClCompile Include="Source\XLib.System.Threading.CriticalSection.cpp">
-      <Filter>System\Threading</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.System.Threading.Event.cpp">
       <Filter>System\Threading</Filter>
     </ClCompile>
     <ClCompile Include="Source\XLib.Heap.cpp" />
-    <ClCompile Include="Source\XLib.System.Window.Controls.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\XLib.Program.cpp" />
     <ClCompile Include="Source\XLib.System.Network.cpp">
       <Filter>System\Network</Filter>
     </ClCompile>
     <ClCompile Include="Source\XLib.Debug.cpp" />
+    <ClCompile Include="Source\XLib.Util.cpp" />
+    <ClCompile Include="Source\XLib.StringWriter.cpp" />
+    <ClCompile Include="Source\XLib.Crypto.CRC.cpp" />
+    <ClCompile Include="Source\XLib.System.AsyncIO.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.File.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.FileSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.NamedPipe.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XLib.System.Network.Socket.cpp">
+      <Filter>System\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">
