@@ -2,14 +2,19 @@
 
 #include "XLib.Heap.h"
 
-void* XLib_Internal::Heap::Allocate(uintptr size)
+using namespace XLib;
+
+void* Heap::Allocate(uintptr size)
 {
+	if (!size)
+		return nullptr;
+
 	void *ptr = HeapAlloc(GetProcessHeap(), 0, size);
 	if (!ptr)
 		throw;
 	return ptr;
 }
-void* XLib_Internal::Heap::ReAllocate(void* ptr, uintptr size)
+void* Heap::ReAllocate(void* ptr, uintptr size)
 {
 	if (size)
 	{
@@ -22,12 +27,12 @@ void* XLib_Internal::Heap::ReAllocate(void* ptr, uintptr size)
 		HeapFree(GetProcessHeap(), 0, ptr);
 	return nullptr;
 }
-bool XLib_Internal::Heap::ReAllocateInplace(void* ptr, uintptr size)
+bool Heap::ReAllocateInplace(void* ptr, uintptr size)
 {
 	void *newPtr = HeapReAlloc(GetProcessHeap(), 0, ptr, size);
 	return newPtr ? true : false;
 }
-void XLib_Internal::Heap::Free(void* ptr)
+void Heap::Release(void* ptr)
 {
 	HeapFree(GetProcessHeap(), 0, ptr);
 }

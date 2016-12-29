@@ -2,6 +2,8 @@
 
 #include "XLib.Program.h"
 
+using namespace XLib;
+
 int main()
 {
 	Program::Run();

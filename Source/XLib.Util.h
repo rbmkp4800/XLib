@@ -2,35 +2,53 @@
 
 #include "XLib.Types.h"
 
-template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
-#define offsetof(type, field) uintptr(((type*)nullptr)->field)
+inline void* operator new (size_t, void* block) { return block; }
+inline void operator delete (void* block, void*) {}
 
-template <typename type> struct RemoveReference abstract final { using Type = type; };
-template <typename type> struct RemoveReference<type&> abstract final { using Type = type; };
-template <typename type> struct RemoveReference<type&&> abstract final { using Type = type; };
+template <typename type, uintptr size> constexpr uintptr countof(type(&)[size]) { return size; }
+template <typename type, uintptr size> constexpr uintptr byteSizeOfArray(type(&)[size]) { return size * sizeof(type); }
+template <typename type> void construct(type& value) { new (&value) type(); }
 
-template <typename type> typename RemoveReference<type>::Type&& move(type&& object) { return (typename RemoveReference<type>::Type&&)object; }
+#undef offsetof
+#define offsetof(type, field) uintptr(&((type*)nullptr)->field)
+
+template <typename _type> struct removeReference abstract final { using type = _type; };
+template <typename _type> struct removeReference<_type&> abstract final { using type = _type; };
+template <typename _type> struct removeReference<_type&&> abstract final { using type = _type; };
+
+template <typename type> typename removeReference<type>::type&& move(type&& object) { return (typename removeReference<type>::type&&)object; }
 
 template <typename resultType, typename argumentType>
-inline typename RemoveReference<resultType>::Type as(argumentType&& argument)
+inline typename removeReference<resultType>::type as(argumentType&& value)
 {
 	static_assert(sizeof(resultType) == sizeof(argumentType), "Xlib.Util: as() function types must be same size");
-	return *((resultType*)&argument);
+	return *((resultType*)&value);
 }
 template <typename resultType, typename argumentType>
-inline typename RemoveReference<resultType>::Type& as(argumentType& argument)
+inline typename removeReference<resultType>::type& as(argumentType& value)
 {
 	static_assert(sizeof(resultType) == sizeof(argumentType), "Xlib.Util: as() function types must be same size");
-	return *((resultType*)&argument);
+	return *((resultType*)&value);
 }
+template <typename resultType, typename argumentType>
+inline typename removeReference<resultType>::type to(const argumentType& value) { return resultType(value); }
 
 template <typename type>
-void swap(type& object1, type& object2)
+inline void swap(type& a, type& b)
 {
-	type tmp(move(object1));
-	object1 = move(object2);
-	object2 = move(tmp);
+	type tmp(move(a));
+	a = move(b);
+	b = move(tmp);
 }
+
+template <> inline void swap<uint8>(uint8& a, uint8& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<uint16>(uint16& a, uint16& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<uint32>(uint32& a, uint32& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<uint64>(uint64& a, uint64& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<sint8>(sint8& a, sint8& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<sint16>(sint16& a, sint16& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<sint32>(sint32& a, sint32& b) { a ^= b; b ^= a; a ^= b; }
+template <> inline void swap<sint64>(sint64& a, sint64& b) { a ^= b; b ^= a; a ^= b; }
 
 #undef min
 #undef max
@@ -51,3 +69,12 @@ constexpr inline type clamp(type val, type _min, type _max)
 template <typename type> constexpr inline type saturate(type val) { return clamp(val, type(0), type(1)); }
 template <typename type> constexpr inline type lincoef(type left, type right, type x) { return (left - x) / (left - right); }
 template <typename vectorType, typename scalarType> constexpr inline vectorType lerp(const vectorType& x, const vectorType& y, scalarType coef) { return x + coef * (y - x); }
+
+uint32 clz(uint32 value);
+uint32 clo(uint32 value);
+uint32 cto(uint32 value);
+uint32 ctz(uint32 value);
+inline uint32 flo(uint32 value) { return 32 - clz(value); }
+inline uint32 flz(uint32 value) { return 32 - clo(value); }
+
+inline uint32 sgn(uint32 value) { return uint32(value != 0); }

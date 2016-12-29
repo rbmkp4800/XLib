@@ -1,133 +1,237 @@
 #pragma once
 
 #include "XLib.Types.h"
-#include "XLib.System.Heap.h"
 #include "XLib.NonCopyable.h"
+#include "XLib.PoolAllocator.h"
 
-namespace _private
+namespace XLib
 {
-	template <typename Type, uint32 sizeLimitLog2>
-	class _SetBase abstract	: public NonCopyable // AVL tree
+	struct SetStoragePolicy abstract final
+	{
+		/*template <uint32 bufferSize>
+		class InternalStatic abstract final {};*/
+
+		template <uint32 minBufferSizeLog2, uint32 maxBufferSizeLog2>
+		class InternalHeapBuffer abstract final {};
+	};
+
+	template <typename Type, typename StoragePolicy>
+	class Set;
+
+	template <typename Type, uint32 minBufferSizeLog2, uint32 maxBufferSizeLog2>
+	class Set<Type, SetStoragePolicy::InternalHeapBuffer<minBufferSizeLog2, maxBufferSizeLog2>> : public NonCopyable
 	{
 	private:
-		struct Node
+		struct AVLTreeNode
 		{
 			Type value;
+			AVLTreeNode *left, *right, *parent;
+			sint8 height;
 
-			Node *left, *right;
-			uint8 heightDelta;
-		} *root;
+			inline void resetHeight() { height = max(right ? right->height : 0, left ? left->height : 0) + 1; }
+			inline sint8 subtreesHeightDelta() { return (right ? right->height : 0) - (left ? left->height : 0); }
 
-	protected:
-		inline _SetBase() : root(nullptr) {}
-
-		template <typename MemoryAllocateCallback>
-		inline Type& add(const Type& value, MemoryAllocateCallback allocate)
-		{
-			Node *currentNode = root;
-			while (currentNode)
+			inline AVLTreeNode* rotateRight()
 			{
-				if (value < currentNode->value)
-					currentNode = currentNode->left;
-				else if (currentNode->value < value)
-					currentNode = currentNode->right;
-				else
-					currentNode->value;
+				AVLTreeNode* newParent = left;
+				left = newParent->right;
+				if (left)
+					left->parent = this;
+				newParent->right = this;
+				newParent->parent = parent;
+				parent = newParent;
+				resetHeight();
+				newParent->resetHeight();
+				return newParent;
 			}
-			return ((Node*)allocate())->value;
-		}
 
-		template <typename MemoryFreeCallback>
-		inline void remove(const Type& value, MemoryFreeCallback free)
-		{
-			Node *currentNode = root;
-			while (currentNode)
+			inline AVLTreeNode* rotateLeft()
 			{
-				if (value < currentNode->value)
-					currentNode = currentNode->left;
-				else if (currentNode->value < value)
-					currentNode = currentNode->right;
-				else
-					free(currentNode);
+				AVLTreeNode* newParent = right;
+				right = newParent->left;
+				if (right)
+					right->parent = this;
+				newParent->left = this;
+				newParent->parent = parent;
+				parent = newParent;
+				resetHeight();
+				newParent->resetHeight();
+				return newParent;
 			}
-		}
 
-		template <typename MemoryFreeCallback>
-		inline void destroy(MemoryFreeCallback free)
-		{
-			Node *stack[sizeLimitLog2];
-			uint32 currentFrame = 1;
-			stack[0] = root;
-			while (currentFrame > 0)
+			inline AVLTreeNode* balance()
 			{
-				currentFrame--;
-				Node *node = stack[currentFrame]->left;
-				if (node->left)
+				resetHeight();
+				if (subtreesHeightDelta() == 2)
 				{
-					currentFrame++;
-					stack[currentFrame] = node->left;
-					node->left = nullptr;
-					continue;
+					if (right->subtreesHeightDelta() < 0)
+						right = right->rotateRight();
+					return rotateLeft();
 				}
-				if (node->right)
+				if (subtreesHeightDelta() == -2)
 				{
-					currentFrame++;
-					stack[currentFrame] = node->right;
-					node->right = nullptr;
-					continue;
+					if (left->subtreesHeightDelta() > 0)
+						left = left->rotateLeft();
+					return rotateRight();
 				}
-				free(stack[currentFrame]);
+				return this;
 			}
-		}
+		};
 
-		inline Type* find(const Type& value)
+		using Allocator = PoolAllocator<AVLTreeNode,
+			PoolAllocatorHeapUsagePolicy::MultipleStaticChunks<minBufferSizeLog2, maxBufferSizeLog2>>;
+
+		Allocator allocator;
+		AVLTreeNode *root;
+
+		inline void _insert(AVLTreeNode* node)
 		{
-			Node *currentNode = root;
-			while (currentNode)
+			if (root)
 			{
-				if (value < currentNode->value)
-					currentNode = currentNode->left;
-				else if (currentNode->value < value)
-					currentNode = currentNode->right;
-				else
-					return currentNode->value;
+				AVLTreeNode *current = root;
+				for (;;)
+				{
+					if (node->value > current->value)
+					{
+						if (current->right)
+							current = current->right;
+						else
+						{
+							node->parent = current;
+							current->right = node;
+							break;
+						}
+					}
+					else if (current->value > node->value)
+					{
+						if (current->left)
+							current = current->left;
+						else
+						{
+							node->parent = current;
+							current->left = node;
+							break;
+						}
+					}
+					else
+					{
+						node->parent = current->parent;
+						if (node->parent)
+						{
+							if (node->parent->left == current)
+								node->parent->left = node;
+							else if (node->parent->right == current)
+								node->parent->right = node;
+						}
+						allocator.release(current);
+						current = node;
+						break;
+					}
+				}
+
+				while (current->parent)
+				{
+					AVLTreeNode* newCurrent = current->balance();
+					AVLTreeNode *parent = newCurrent->parent;
+					if (parent->left == current)
+						parent->left = newCurrent;
+					else if (parent->right == current)
+						parent->right = newCurrent;
+					current = parent;
+				}
+
+				root = current->balance();
 			}
-			return nullptr;
+			else
+			{
+				root = node;
+				root->parent = nullptr;
+			}
 		}
 
-		static constexpr uint32 bytesPerElement = sizeof(Node);
+	public:
+		class Iterator
+		{
+			friend class Set;
 
-		using type = Type;
+		private:
+			AVLTreeNode *current;
+			inline Iterator(AVLTreeNode *_current) : current(_current) {}
+
+		public:
+			inline Type& get() { return current->value; }
+			inline bool isValid() { return current ? true : false; }
+		};
+
+		class PreAllocatedElementHandle
+		{
+			friend class Set;
+
+		private:
+			AVLTreeNode *node;
+			inline PreAllocatedElementHandle(AVLTreeNode* _node) : node(_node) {}
+
+		public:
+			inline PreAllocatedElementHandle() : node(nullptr) {}
+			inline Type& get() { return node->value; }
+		};
+
+		inline Set() : root(nullptr) {}
+		~Set() = default;
+
+		inline PreAllocatedElementHandle preAllocate()
+		{
+			AVLTreeNode *node = allocator.allocate();
+			node->left = nullptr;
+			node->right = nullptr;
+			node->parent = nullptr;
+			return PreAllocatedElementHandle(node);
+		}
+
+		inline void insertPreAllocated(PreAllocatedElementHandle handle)
+		{
+			Debug::AssertIfDebug(handle.node && handle.node->left == nullptr && handle.node->right == nullptr
+				&& handle.node->parent == nullptr, DbgMsgFmt("invalid preallocated handle"));
+
+			handle.node->left = nullptr;
+			handle.node->right = nullptr;
+			handle.node->parent = nullptr;
+			handle.node->height = 1;
+			_insert(handle.node);
+		}
+
+		inline Iterator insert(const Type& value)
+		{
+			AVLTreeNode *node = allocator.allocate();
+			node->value = value;
+			node->left = nullptr;
+			node->right = nullptr;
+			node->parent = nullptr;
+			node->height = 1;
+			_insert(node);
+			return Iterator(node);
+		}
+
+		/*template <typename KeyType>
+		inline void remove(const KeyType& key)
+		{
+
+		}*/
+
+		template <typename KeyType>
+		inline Iterator find(const KeyType& key)
+		{
+			AVLTreeNode *current = root;
+			while (current)
+			{
+				if (key > current->value)
+					current = current->right;
+				else if (current->value > key)
+					current = current->left;
+				else
+					return Iterator(current);
+			}
+			return Iterator(nullptr);
+		}
 	};
 }
-
-enum class SetAllocationPolicy
-{
-	GlobalAllocator = 0,
-	CustomAllocator = 1,
-	Default = GlobalAllocator,
-};
-
-template <typename Type, SetAllocationPolicy policy = Default, uint32 sizeLimitLog2 = 32>
-class Set;
-
-template <typename Type, uint32 sizeLimitLog2>
-class Set<Type, SetAllocationPolicy::GlobalAllocator, sizeLimitLog2> : public _private::_SetBase<Type, sizeLimitLog2>
-{
-public:
-	Set() = default;
-	inline ~Set()
-	{
-		destroy([](void* block) { Heap::Free(block); });
-	}
-
-	inline Type& add(const Type& value)
-	{
-		return _SetBase::add(value, []() -> void* { return Heap::Allocate(_SetBase::bytesPerElement); });
-	}
-	inline void remove(const Type& value)
-	{
-		_SetBase::remove(value, [](void* block) { Heap::Free(block); });
-	}
-	inline 
-};

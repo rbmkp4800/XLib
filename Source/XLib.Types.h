@@ -11,13 +11,25 @@ using sint64 = signed long long int;
 using float32 = float;
 using float64 = double;
 
+using uint = unsigned;
+using sint = signed;
+
 using byte = uint8;
 using wchar = wchar_t;
 
 #ifdef _WIN64
 using uintptr = uint64;
-using sintptr = sint64
+using sintptr = sint64;
 #else
 using uintptr = __w64 uint32;
 using sintptr = __w64 sint32;
 #endif
+
+static_assert(sizeof(uintptr) == sizeof(void*) && sizeof(sintptr) == sizeof(void*), "invalid uintptr/sintptr size");
+
+struct invalidptr_t final
+{
+	template <typename Type>
+	inline operator Type*() const { return (Type*)uintptr(-1); }
+};
+constexpr invalidptr_t invalidptr;

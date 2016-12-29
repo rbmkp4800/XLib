@@ -3,6 +3,8 @@
 
 #include "XLib.Memory.h"
 
+using namespace XLib;
+
 void Memory::Set(void* memory, byte value, uintptr size)
 {
 	memset(memory, value, size);

@@ -2,6 +2,8 @@
 
 #include "XLib.Math.h"
 
+using namespace XLib;
+
 float32 Math::Sqrt(float32 arg) { return sqrtf(arg); }
 float32 Math::Sin(float32 arg) { return sinf(arg); }
 float32 Math::Cos(float32 arg) { return cosf(arg); }

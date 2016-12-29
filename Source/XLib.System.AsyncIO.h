@@ -4,57 +4,73 @@
 #include "XLib.NonCopyable.h"
 #include "XLib.Delegate.h"
 #include "XLib.Memory.h"
-#include "XLib.System.FileHandle.h"
 
-class HostedAsyncTask : public NonCopyable
+namespace XLib
 {
-	friend class AsyncIOHost;
+	class AsyncIODispatcher;
 
-	friend class TCPSocket;
-	friend class TCPListenSocket;
+	using TransferCompletedHandler = Delegate<void, bool, uint32, uintptr>;
+	using CustomHandler = Delegate<void>;
 
-private:
-	enum class State : uint32
+	class Socket;
+	class TCPSocket;
+	class TCPListenSocket;
+	class NamedPipe;
+
+	class DispatchedAsyncTask : public NonCopyable
 	{
-		None = 0,
-		SocketReceive = 0xA1B2C301,
-		SocketSend = 0xA1B2C302,
-		SocketAccept = 0xA1B2C303,
-		//SocketConnect = 0xA1B2C304,
+		friend AsyncIODispatcher;
+
+		friend TCPSocket;
+		friend TCPListenSocket;
+		friend NamedPipe;
+
+	private:
+		enum class State : uint32
+		{
+			None = 0,
+			Transfer = 0xA1B2C301,
+			SocketAccept = 0xA1B2C302,
+			//SocketConnect = 0xA1B2C304,
+		};
+
+		static constexpr uint32 overlappedSize = sizeof(void*) == 4 ? 20 : 32;
+
+		byte overlapped[overlappedSize] = { 0 };	// must be first
+		RawDelegate rawHandler;
+		uintptr key = 0;
+		State state = State::None;
+
+		inline void clear()
+			{ Memory::Set(this, 0, sizeof(*this)); }
+
+	public:
+		void cancel();
+
+		inline bool isActive() const { return state != State::None; }
 	};
 
-	byte overlapped[20] = { 0 };	// must be first
-	RawDelegate rawHandler;
-	uintptr key = 0;
-	State state = State::None;
+	class AsyncIODispatcher : public NonCopyable
+	{
+	private:
+		void *hIOCP;
 
-	inline void clear()
-		{ Memory::Set(this, 0, sizeof(*this)); }
+	public:
+		inline AsyncIODispatcher() : hIOCP(nullptr) {}
+		~AsyncIODispatcher();
 
-public:
-	void cancel();
-};
+		void initialize();
+		inline void destroy() { this->~AsyncIODispatcher(); }
 
-class AsyncIOHost : public NonCopyable
-{
-private:
-	void *hIOCP;
+		void associate(Socket& socket);
+		void associate(NamedPipe& pipe);
 
-public:
-	inline AsyncIOHost() : hIOCP(nullptr) {}
-	~AsyncIOHost();
+		void dispatchAll();
+		void dispatchPending();
+		void invokeShutdown();
 
-	void initialize();
-	inline void destroy() { this->~AsyncIOHost(); }
+		void invoke(CustomHandler handler);
 
-	void associate(ISystemFileHandle& handle);
-
-	void dispatchAll();
-	void dispatchPending();
-	void quit();
-
-	void postMessage_socketReceiveCompleted(HostedAsyncTask& asyncTask,
-		uint32 transferredSize, uintptr key);
-
-	inline bool isInitialized() { return hIOCP ? true : false; }
-};
+		inline bool isInitialized() { return hIOCP != nullptr; }
+	};
+}

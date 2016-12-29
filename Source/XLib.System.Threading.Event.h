@@ -2,18 +2,21 @@
 
 #include "XLib.System.Threading.h"
 
-class Event : public IWaitable
+namespace XLib
 {
-public:
-	Event() = default;
-	inline Event(bool state, bool manualReset = true)
+	class Event : public WaitableBase
 	{
-		initialize(state, manualReset);
-	}
+	public:
+		Event() = default;
+		inline Event(bool state, bool manualReset = true)
+		{
+			initialize(state, manualReset);
+		}
 
-	void initialize(bool state, bool manualReset = true);
+		void initialize(bool state, bool manualReset = true);
 
-	void set();
-	void reset();
-	void pulse();
-};
+		void set();
+		void reset();
+		void pulse();
+	};
+}

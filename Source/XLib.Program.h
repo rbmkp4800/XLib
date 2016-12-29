@@ -2,7 +2,10 @@
 
 #include "XLib.Types.h"
 
-struct Program abstract final
+namespace XLib
 {
-	static void Run();
-};
+	struct Program abstract final
+	{
+		static void Run();
+	};
+}

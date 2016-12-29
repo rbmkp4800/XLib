@@ -1,11 +1,14 @@
 #pragma once
 
-class NonCopyable abstract
+namespace XLib
 {
-	NonCopyable(const NonCopyable&) = delete;
-	NonCopyable& operator = (const NonCopyable&) = delete;
+	class NonCopyable abstract
+	{
+		NonCopyable(const NonCopyable&) = delete;
+		NonCopyable& operator = (const NonCopyable&) = delete;
 
-protected:
-	NonCopyable() = default;
-	~NonCopyable() = default;
-};
+	protected:
+		NonCopyable() = default;
+		~NonCopyable() = default;
+	};
+}

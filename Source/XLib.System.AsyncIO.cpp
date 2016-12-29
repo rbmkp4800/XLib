@@ -3,19 +3,25 @@
 #include "XLib.Types.h"
 #include "XLib.System.AsyncIO.h"
 #include "XLib.System.Network.Socket.h"
+#include "XLib.System.Pipe.h"
 
-constexpr ULONG_PTR xlibCompletitionKey = 0x786C6962;
-constexpr ULONG_PTR xlibTerminateCompletitionKey = 0x786C6963;
+using namespace XLib;
 
-void AsyncIOHost::initialize()
+constexpr ULONG_PTR xlibCompletitionKey = ULONG_PTR(0xFFFFFFFF'FFFFFFFE);
+constexpr ULONG_PTR xlibTerminateCompletitionKey = ULONG_PTR(0xFFFFFFFF'FFFFFFFF);
+
+void AsyncIODispatcher::initialize()
 {
-	static_assert(sizeof(HostedAsyncData::overlapped) == sizeof(OVERLAPPED),
-		"XLib.System.AsyncIO.Internal.HostedAsyncData.overlapped size != OVERLAPPED size");
+	/*static_assert(offsetof(DispatchedAsyncTask, overlapped) == 0,
+		"XLib.System.AsyncIO.Internal.DispatchedAsyncTask.overlapped offset must be 0");*/
+
+	static_assert(sizeof(DispatchedAsyncTask::overlapped) == sizeof(OVERLAPPED),
+		"XLib.System.AsyncIO.Internal.DispatchedAsyncTask.overlapped size != OVERLAPPED size");	
 
 	destroy();
 	hIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
 }
-AsyncIOHost::~AsyncIOHost()
+AsyncIODispatcher::~AsyncIODispatcher()
 {
 	if (hIOCP)
 	{
@@ -24,65 +30,73 @@ AsyncIOHost::~AsyncIOHost()
 	}
 }
 
-void AsyncIOHost::associate(Socket& socket)
+void AsyncIODispatcher::associate(Socket& socket)
 	{ CreateIoCompletionPort(socket.getHandle(), hIOCP, xlibCompletitionKey, 0); }
+void AsyncIODispatcher::associate(NamedPipe& pipe)
+	{ CreateIoCompletionPort(pipe.getHandle(), hIOCP, xlibCompletitionKey, 0); }
 
-void AsyncIOHost::dispatchAll()
+void AsyncIODispatcher::dispatchAll()
 {
 	for (;;)
 	{
 		DWORD transferredSize = 0;
 		ULONG_PTR key = 0;
-		HostedAsyncData* asyncData = nullptr;
-		BOOL result = GetQueuedCompletionStatus(hIOCP, &transferredSize,
-			&key, (OVERLAPPED**)&asyncData, INFINITE);
+		DispatchedAsyncTask* task = nullptr;
+		BOOL result = GetQueuedCompletionStatus(hIOCP, &transferredSize, &key, (OVERLAPPED**)&task, INFINITE);
 
-		if (result == FALSE && !asyncData)
-			throw;
 		if (key == xlibTerminateCompletitionKey)
 			return;
-		if (key != xlibCompletitionKey)
-			continue;
+		if (result == FALSE && task == nullptr)
+			throw;
 
-		switch (asyncData->state)
+		if (key == xlibCompletitionKey)
 		{
-			case HostedAsyncData::State::SocketReceive:
-			case HostedAsyncData::State::SocketSend:
+			switch (task->state)
 			{
-				TransferCompletedHandler handler(asyncData->rawHandler);
-				uintptr userKey = asyncData->key;
-				asyncData->clear();
+				case DispatchedAsyncTask::State::Transfer:
+				{
+					TransferCompletedHandler handler(task->rawHandler);
+					uintptr userKey = task->key;
+					task->clear();
 
-				handler.call(result ? true : false, uint32(transferredSize), userKey);
+					if (!transferredSize)
+						result = 0;
+
+					handler.call(result ? true : false, uint32(transferredSize), userKey);
+
+					break;
+				}
+
+				case DispatchedAsyncTask::State::SocketAccept:
+				{
+					SocketAcceptedHandler handler(task->rawHandler);
+					uintptr userKey = task->key;
+					task->clear();
+
+					TCPListenSocket::DispatchedAsyncTask *acceptTask = (TCPListenSocket::DispatchedAsyncTask*)task;
+					handler.call(result ? true : false, acceptTask->acceptedSocket, acceptTask->extractIPAddress(), userKey);
+
+					break;
+				}
+
+				default:
+					break;
 			}
-			break;
-
-			case HostedAsyncData::State::SocketAccept:
-			{
-				TCPListenSocket::ClientAcceptedHandler handler(asyncData->rawHandler);
-				uintptr userKey = asyncData->key;
-				asyncData->clear();
-
-				TCPListenSocket::HostedAsyncData *acceptAsyncData =
-					(TCPListenSocket::HostedAsyncData*)asyncData;
-				handler.call(result ? true : false, acceptAsyncData->acceptedSocket,
-					acceptAsyncData->extractIPAddress(), userKey);
-			}
-			break;
-
-			default: continue;
+		}
+		else
+		{
+			CustomHandler handler(RawDelegate((void*)key, (void*)task));
+			handler.call();
 		}
 	}
 }
 //void AsyncIOHost::dispatchPending(){}
 
-void AsyncIOHost::postMessage_socketReceiveCompleted(
-	HostedAsyncData& asyncData, uint32 transferredSize, uintptr key)
-{
-	asyncData.key = key;
-	PostQueuedCompletionStatus(hIOCP, transferredSize,
-		xlibCompletitionKey, (OVERLAPPED*)&asyncData.overlapped);
-}
-
-void AsyncIOHost::quit()
+void AsyncIODispatcher::invokeShutdown()
 	{ PostQueuedCompletionStatus(hIOCP, 0, xlibTerminateCompletitionKey, nullptr); }
+
+void AsyncIODispatcher::invoke(CustomHandler handler)
+{
+	RawDelegate rawHandler = handler.toRaw();
+	PostQueuedCompletionStatus(hIOCP, 0, ULONG_PTR(rawHandler.getObject()), (OVERLAPPED*)rawHandler.getMethod());
+}
