@@ -1,9 +1,10 @@
 #include <Windows.h>
 
 #include "XLib.Types.h"
+#include "XLib.Debug.h"
 #include "XLib.System.AsyncIO.h"
 #include "XLib.System.Network.Socket.h"
-#include "XLib.System.Pipe.h"
+#include "XLib.System.NamedPipe.h"
 
 using namespace XLib;
 
@@ -21,7 +22,7 @@ void AsyncIODispatcher::initialize()
 	destroy();
 	hIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
 }
-AsyncIODispatcher::~AsyncIODispatcher()
+void AsyncIODispatcher::destroy()
 {
 	if (hIOCP)
 	{
@@ -46,8 +47,11 @@ void AsyncIODispatcher::dispatchAll()
 
 		if (key == xlibTerminateCompletitionKey)
 			return;
-		if (result == FALSE && task == nullptr)
-			throw;
+		if (!result && !task)
+		{
+			Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+			return;
+		}
 
 		if (key == xlibCompletitionKey)
 		{
@@ -61,9 +65,7 @@ void AsyncIODispatcher::dispatchAll()
 
 					if (!transferredSize)
 						result = 0;
-
-					handler.call(result ? true : false, uint32(transferredSize), userKey);
-
+					handler.call(result != FALSE, uint32(transferredSize), userKey);
 					break;
 				}
 
@@ -74,28 +76,49 @@ void AsyncIODispatcher::dispatchAll()
 					task->clear();
 
 					TCPListenSocket::DispatchedAsyncTask *acceptTask = (TCPListenSocket::DispatchedAsyncTask*)task;
-					handler.call(result ? true : false, acceptTask->acceptedSocket, acceptTask->extractIPAddress(), userKey);
+					handler.call(result != FALSE, acceptTask->acceptedSocket, acceptTask->extractIPAddress(), userKey);
+					break;
+				}
 
+				case DispatchedAsyncTask::State::NamedPipeConnect:
+				{
+					NamedPipeConnectedHandler handler(task->rawHandler);
+					uintptr userKey = task->key;
+					task->clear();
+
+					handler.call(result != FALSE, userKey);
 					break;
 				}
 
 				default:
+					Debug::Warning(DbgMsgFmt("invalid task type"));
 					break;
 			}
 		}
 		else
 		{
-			CustomHandler handler(RawDelegate((void*)key, (void*)task));
+			Delegate<void> handler(RawDelegate((void*)key, (void*)task));
 			handler.call();
 		}
 	}
 }
-//void AsyncIOHost::dispatchPending(){}
+void AsyncIODispatcher::cleanupQueue()
+{
+	for (;;)
+	{
+		DWORD dwDummy = 0;
+		ULONG_PTR ulptrDummy = 0;
+		OVERLAPPED* overlapper = nullptr;
+		BOOL result = GetQueuedCompletionStatus(hIOCP, &dwDummy, &ulptrDummy, &overlapper, 0);
+		if (!result && !overlapper)
+			return;
+	}
+}
 
 void AsyncIODispatcher::invokeShutdown()
 	{ PostQueuedCompletionStatus(hIOCP, 0, xlibTerminateCompletitionKey, nullptr); }
 
-void AsyncIODispatcher::invoke(CustomHandler handler)
+void AsyncIODispatcher::invoke(Delegate<void> handler)
 {
 	RawDelegate rawHandler = handler.toRaw();
 	PostQueuedCompletionStatus(hIOCP, 0, ULONG_PTR(rawHandler.getObject()), (OVERLAPPED*)rawHandler.getMethod());

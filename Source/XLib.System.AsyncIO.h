@@ -10,7 +10,6 @@ namespace XLib
 	class AsyncIODispatcher;
 
 	using TransferCompletedHandler = Delegate<void, bool, uint32, uintptr>;
-	using CustomHandler = Delegate<void>;
 
 	class Socket;
 	class TCPSocket;
@@ -26,15 +25,16 @@ namespace XLib
 		friend NamedPipe;
 
 	private:
+		static constexpr uint32 overlappedSize = sizeof(void*) == 4 ? 20 : 32;
+
 		enum class State : uint32
 		{
 			None = 0,
 			Transfer = 0xA1B2C301,
 			SocketAccept = 0xA1B2C302,
-			//SocketConnect = 0xA1B2C304,
+			//SocketConnect = 0xA1B2C303,
+			NamedPipeConnect = 0xA1B2C304,
 		};
-
-		static constexpr uint32 overlappedSize = sizeof(void*) == 4 ? 20 : 32;
 
 		byte overlapped[overlappedSize] = { 0 };	// must be first
 		RawDelegate rawHandler;
@@ -53,23 +53,24 @@ namespace XLib
 	class AsyncIODispatcher : public NonCopyable
 	{
 	private:
-		void *hIOCP;
+		void *hIOCP = nullptr;
 
 	public:
-		inline AsyncIODispatcher() : hIOCP(nullptr) {}
-		~AsyncIODispatcher();
+		AsyncIODispatcher() = default;
+		inline ~AsyncIODispatcher() { destroy(); }
 
 		void initialize();
-		inline void destroy() { this->~AsyncIODispatcher(); }
+		void destroy();
 
 		void associate(Socket& socket);
 		void associate(NamedPipe& pipe);
 
 		void dispatchAll();
 		void dispatchPending();
-		void invokeShutdown();
+		void cleanupQueue();
 
-		void invoke(CustomHandler handler);
+		void invokeShutdown();
+		void invoke(Delegate<void> handler);
 
 		inline bool isInitialized() { return hIOCP != nullptr; }
 	};

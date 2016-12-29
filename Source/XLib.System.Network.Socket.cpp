@@ -183,6 +183,7 @@ void TCPSocket::asyncSend(void* buffer, uint32 size, DispatchedAsyncTask& task,
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
 		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		task.clear();
 		handler.call(false, 0, key);
 	}
 }
@@ -200,6 +201,7 @@ void TCPSocket::asyncSendSegments(TransferBufferSegment* segments, uint32 segmen
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
 		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		task.clear();
 		handler.call(false, 0, key);
 	}
 }
@@ -218,6 +220,7 @@ void TCPSocket::asyncReceive(void* buffer, uint32 size, DispatchedAsyncTask& tas
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
 		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		task.clear();
 		handler.call(false, 0, key);
 	}
 }
