@@ -68,7 +68,8 @@ constexpr inline type clamp(type val, type _min, type _max)
 }
 template <typename type> constexpr inline type saturate(type val) { return clamp(val, type(0), type(1)); }
 template <typename type> constexpr inline type lincoef(type left, type right, type x) { return (left - x) / (left - right); }
-template <typename vectorType, typename scalarType> constexpr inline vectorType lerp(const vectorType& x, const vectorType& y, scalarType coef) { return x + coef * (y - x); }
+template <typename vectorType, typename scalarType> constexpr inline vectorType lerp(const vectorType& x, const vectorType& y, scalarType coef) { return x + (y - x) * coef; }
+template <typename vectorType> constexpr inline vectorType lerp(const vectorType& x, const vectorType& y, uint32 numerator, uint32 denominator) { return x + (y - x) * float32(numerator) / float32(denominator); }
 
 uint32 clz(uint32 value);
 uint32 clo(uint32 value);

@@ -47,6 +47,6 @@ namespace XLib
 		inline bool isAllocated() { return ptr ? true : false; }
 
 		template <typename OtherType>
-		inline OtherType to() { return OtherType(ptr); }
+		inline explicit operator OtherType () const { return OtherType(ptr); }
 	};
 }
