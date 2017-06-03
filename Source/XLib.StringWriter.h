@@ -5,10 +5,17 @@
 namespace XLib
 {
 	template <uint8 digitCount = 0, bool leadingZeros = false>
-	struct hex
+	struct FmtHex
 	{
 		uint32 value;
-		explicit hex(uint32 _value) : value(_value) {}
+		explicit FmtHex(uint32 _value) : value(_value) {}
+	};
+
+	template <uint8 digitCount = 0, uint8 precision = 0>
+	struct FmtFP32
+	{
+		float32 value;
+		explicit FmtFP32(float32 _value) : value(_value) {}
 	};
 
 	static constexpr char endOfString = '\0';
@@ -32,10 +39,15 @@ namespace XLib
 		bool _put(uint32 value);
 		bool _put(const char* value);
 		bool _putHex(uint32 value, uint8 digitCount, bool leadingZeros);
+		bool _putFP32(float32 value, uint8 digitCount, uint8 precision);
 
 		template <uint8 digitCount, bool leadingZeros>
-		inline bool _put(const hex<digitCount, leadingZeros> value)
-			{ return _putHex(value.value, digitCount, leadingZeros); }
+		inline bool _put(const FmtHex<digitCount, leadingZeros> fmt)
+			{ return _putHex(fmt.value, digitCount, leadingZeros); }
+
+		template <uint8 digitCount = 0, uint8 precision = 0>
+		inline bool _put(const FmtFP32<digitCount, precision> fmt)
+			{ return _putFP32(fmt.value, digitCount, precision); }
 
 	public:
 		inline StringWriter(char* buffer, uintptr size)

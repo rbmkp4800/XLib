@@ -5,8 +5,8 @@
 inline void* operator new (size_t, void* block) { return block; }
 inline void operator delete (void* block, void*) {}
 
-template <typename type, uintptr size> constexpr uintptr countof(type(&)[size]) { return size; }
-template <typename type, uintptr size> constexpr uintptr byteSizeOfArray(type(&)[size]) { return size * sizeof(type); }
+template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
+template <typename type, uint32 size> constexpr uint32 byteSizeOfArray(type(&)[size]) { return size * sizeof(type); }
 template <typename type> void construct(type& value) { new (&value) type(); }
 
 #undef offsetof

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\XLib.Math.Quaternion.h" />
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
     <ClInclude Include="Source\XLib.Allocator.h" />

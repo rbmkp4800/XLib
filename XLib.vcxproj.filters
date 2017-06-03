@@ -2,15 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Source\XLib.Allocator.h" />
-    <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
     <ClInclude Include="Source\XLib.NonCopyable.h" />
-    <ClInclude Include="Source\XLib.Math.h" />
     <ClInclude Include="Source\XLib.Memory.h" />
     <ClInclude Include="Source\XLib.Random.h" />
     <ClInclude Include="Source\XLib.Types.h" />
     <ClInclude Include="Source\XLib.Util.h" />
-    <ClInclude Include="Source\XLib.Vectors.Arithmetics.h" />
-    <ClInclude Include="Source\XLib.Vectors.h" />
     <ClInclude Include="Source\XLib.System.Timer.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -44,11 +40,9 @@
     <ClInclude Include="Source\XLib.System.Threading.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
     <ClInclude Include="Source\XLib.Heap.h" />
     <ClInclude Include="Source\XLib.Float.Conversion.h" />
     <ClInclude Include="Source\XLib.Float.Consts.h" />
-    <ClInclude Include="Source\XLib.Vectors.Math.h" />
     <ClInclude Include="Source\XLib.System.Threading.CyclicQueue.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
@@ -66,7 +60,6 @@
     <ClInclude Include="Source\XLib.System.FileHandle.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Math.Matrix3x4.h" />
     <ClInclude Include="Source\XLib.Debug.h" />
     <ClInclude Include="Source\XLib.StringWriter.h" />
     <ClInclude Include="Source\XLib.Strings.h" />
@@ -102,9 +95,32 @@
     <ClInclude Include="Source\XLib.Containers.CyclicQueue.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Matrix3x2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Matrix3x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Math.Matrix4x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Vectors.Math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Vectors.Arithmetics.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Vectors.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
     <ClCompile Include="Source\XLib.System.Timer.cpp">
@@ -146,6 +162,9 @@
     <ClCompile Include="Source\XLib.System.Network.Socket.cpp">
       <Filter>System\Network</Filter>
     </ClCompile>
+    <ClCompile Include="Source\XLib.Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">
@@ -162,6 +181,9 @@
     </Filter>
     <Filter Include="System\Network">
       <UniqueIdentifier>{d5be2868-222d-4843-a6b4-f497188ebeca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{19a0bd74-1791-426c-abf8-cf43760f75a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
