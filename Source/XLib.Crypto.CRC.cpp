@@ -1,6 +1,8 @@
+#include "XLib.Crypto.CRC.h"
+
 #include "XLib.Util.h"
 
-#include "XLib.Crypto.CRC.h"
+using namespace XLib;
 
 uint8 CRC8::Compute(const void* data, uintptr size, uint8 initValue)
 {

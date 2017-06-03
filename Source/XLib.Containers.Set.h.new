@@ -3,19 +3,20 @@
 #include "XLib.Types.h"
 #include "XLib.NonCopyable.h"
 #include "XLib.PoolAllocator.h"
+#include "XLib.System.Threading.ReadersWriterLock.h"
 
 namespace XLib
 {
 	struct SetStoragePolicy abstract final
 	{
-		/*template <uint32 bufferSize>
-		class InternalStatic abstract final {};*/
+		//template <uint32 bufferSize>
+		//class InternalStatic abstract final {};
 
 		template <uint32 minBufferSizeLog2, uint32 maxBufferSizeLog2>
 		class InternalHeapBuffer abstract final {};
 	};
 
-	template <typename Type, typename StoragePolicy>
+	template <typename Type, typename StoragePolicy, bool threadSafe = false>
 	class Set;
 
 	template <typename Type, uint32 minBufferSizeLog2, uint32 maxBufferSizeLog2>
@@ -232,6 +233,32 @@ namespace XLib
 					return Iterator(current);
 			}
 			return Iterator(nullptr);
+		}
+	};
+
+	template <typename Type, typename StoragePolicy>
+	class Set<Type, StoragePolicy, true>
+	{
+	private:
+		using Base = Set<Type, StoragePolicy, false>;
+
+		Base base;
+		ReadersWriterLock lock;
+
+	public:
+		using Iterator = Base::Iterator;
+		using PreAllocatedElementHandle = Base::PreAllocatedElementHandle;
+
+		inline Iterator insert(const Type& value)
+		{
+			ScopedWriterLock _lock(lock);
+			return base.insert(value);
+		}
+		template <typename KeyType>
+		inline Iterator find(const KeyType& key)
+		{
+			ScopedReaderLock _lock(lock);
+			return base.find(key);
 		}
 	};
 }

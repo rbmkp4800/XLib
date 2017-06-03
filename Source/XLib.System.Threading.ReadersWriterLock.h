@@ -54,7 +54,7 @@ namespace XLib
 	class ScopedWriterLock : public NonCopyable
 	{
 	private:
-		ReadersWriterLock& lock;
+		ReadersWriterLock &lock;
 
 	public:
 		inline ScopedWriterLock(ReadersWriterLock& _lock) : lock(_lock) { lock.writerLock(); }
