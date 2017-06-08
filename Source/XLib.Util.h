@@ -7,7 +7,7 @@ inline void operator delete (void* block, void*) {}
 
 template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
 template <typename type, uint32 size> constexpr uint32 byteSizeOfArray(type(&)[size]) { return size * sizeof(type); }
-template <typename type> void construct(type& value) { new (&value) type(); }
+template <typename type> inline void construct(type& value) { new (&value) type(); }
 
 #undef offsetof
 #define offsetof(type, field) uintptr(&((type*)nullptr)->field)
@@ -16,7 +16,7 @@ template <typename _type> struct removeReference abstract final { using type = _
 template <typename _type> struct removeReference<_type&> abstract final { using type = _type; };
 template <typename _type> struct removeReference<_type&&> abstract final { using type = _type; };
 
-template <typename type> typename removeReference<type>::type&& move(type&& object) { return (typename removeReference<type>::type&&)object; }
+template <typename type> inline typename removeReference<type>::type&& move(type&& object) { return (typename removeReference<type>::type&&)object; }
 
 template <typename resultType, typename argumentType>
 inline typename removeReference<resultType>::type as(argumentType&& value)
@@ -58,6 +58,7 @@ template <typename type> constexpr inline type abs(type val) { return val >= typ
 template <typename type> constexpr inline type min(type val1, type val2) { return val1 < val2 ? val1 : val2; }
 template <typename type> constexpr inline type max(type val1, type val2) { return val1 > val2 ? val1 : val2; }
 template <typename type> constexpr inline type intdivceil(type val, type divider) { return (val - 1) / divider + 1; }
+template <typename type> constexpr inline type alignup(type value, type alignment) { return ((value - 1) / alignment + 1) * alignment; }
 
 template <typename type>
 constexpr inline type clamp(type val, type _min, type _max)
