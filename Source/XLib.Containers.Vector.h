@@ -47,7 +47,11 @@ namespace XLib
 
 	public:
 		explicit inline Vector(uint32 initSize = 0)
-			: buffer(initSize), bufferSize(initSize), vectorSize(initSize) {}
+			: buffer(initSize), bufferSize(initSize), vectorSize(initSize)
+		{
+			for (uint32 i = 0; i < vectorSize; i++)
+				construct(buffer[i]);
+		}
 		inline ~Vector() { bufferSize = 0; vectorSize = 0; }
 
 		inline Vector(Vector&& that) : buffer(move(that.buffer))
@@ -77,13 +81,33 @@ namespace XLib
 		inline Type& front() { return buffer[0]; }
 		inline Type& back() { return buffer[vectorSize - 1]; }
 
-		void resize(uint32 newSize)
+		inline Type* allocateBack(uint32 count)
+		{
+			expandBuffer(vectorSize + count);
+			Type *result = buffer + vectorSize;
+			vectorSize += count;
+
+			for (uint32 i = 0; i < count; i++)
+				construct(result[i]);
+
+			return result;
+		}
+		inline Type& allocateBack() { return *allocateBack(1); }
+
+		inline void resize(uint32 newSize)
 		{
 			vectorSize = newSize;
 			expandBuffer(vectorSize);
 		}
-		void clear() { resize(0); }
-		void compact() { buffer.resize(vectorSize); }
+		inline void clear() { resize(0); }
+		inline void compact() { buffer.resize(vectorSize); }
+		inline HeapPtr<Type> takeBuffer()
+		{
+			compact();
+			bufferSize = 0;
+			vectorSize = 0;
+			return move(buffer);
+		}
 
 		inline operator Type*() { return buffer; }
 		inline uint32 getSize() const { return vectorSize; }
