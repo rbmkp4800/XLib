@@ -58,8 +58,8 @@ template <typename type> constexpr inline type abs(type val) { return val >= typ
 template <typename type> constexpr inline type min(type val1, type val2) { return val1 < val2 ? val1 : val2; }
 template <typename type> constexpr inline type max(type val1, type val2) { return val1 > val2 ? val1 : val2; }
 template <typename type> constexpr inline type intdivceil(type val, type divider) { return (val - 1) / divider + 1; }
-template <typename type> constexpr inline type alignup(type value, type alignment) { return ((value - 1) / alignment + 1) * alignment; }
-template <typename type> constexpr inline type aligndown(type value, type alignment) { return value / alignment * alignment; }
+template <typename valueType, typename alignmentType> constexpr inline auto alignup(valueType value, alignmentType alignment) { return valueType(value + alignment - 1) / alignment * alignment; }
+template <typename valueType, typename alignmentType> constexpr inline auto aligndown(valueType value, alignmentType alignment) { return value / alignment * alignment; }
 
 template <typename type>
 constexpr inline type clamp(type val, type _min, type _max)
