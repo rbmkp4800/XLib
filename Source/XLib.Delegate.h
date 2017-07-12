@@ -1,5 +1,16 @@
 #pragma once
 
+// works only with MSVC++
+// this code will crash on GCC due to method pointer structure differences
+// https://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
+// might be usefull for GCC version: https://gcc.gnu.org/onlinedocs/gcc/Bound-member-functions.html
+
+#include "XLib.Types.h"
+
+#ifndef _MSC_VER
+static_assert(false, "only MSVC++ supported");
+#endif 
+
 namespace XLib
 {
 	class RawDelegate
@@ -23,13 +34,84 @@ namespace XLib
 	{
 	public:
 		template <class Class>
-		using Method = ReturnType(Class::*)(ArgsTypes ...);
+		using MethodPointer = ReturnType(Class::*)(ArgsTypes ...);
 
 	private:
-		class DummyClass { int dummy; };
+		class DummyClass
+		{
+		public:
+			int dummy;
+			void* getThis() { return this; }
+		};
+
+		static_assert(sizeof(MethodPointer<DummyClass>) == sizeof(void*), "invalid environment");
+
+		template <uint methodPointerSize, class Class>
+		struct MethodPointerConverter abstract
+		{
+			//static_assert(false, "this type of method pointer not supported");
+		};
+
+		// single inheritance
+		template <class Class>
+		class MethodPointerConverter<sizeof(void*), Class> abstract
+		{
+		public:
+			static inline void Convert(Class* _object, MethodPointer<Class> _method,
+				DummyClass*& targetObject, MethodPointer<DummyClass>& targetMethod)
+			{
+				union
+				{
+					MethodPointer<Class> sourceClassMethodPointer;
+					MethodPointer<DummyClass> dummyClassMethodPointer;
+				};
+				sourceClassMethodPointer = _method;
+				targetMethod = dummyClassMethodPointer;
+				targetObject = (DummyClass*)_object;
+			}
+		};
+
+		// virtual/multiple inheritance
+		// MSVC++ virtual method pointer structure:
+		//		codePointer
+		//		uint32 thisAdjustmentDelta
+		//		uint32 vtableIndex
+		template <class Class>
+		class MethodPointerConverter<sizeof(void*) + sizeof(uint32) + sizeof(uint32), Class> abstract
+		{
+		public:
+			static inline void Convert(Class* _object, MethodPointer<Class> _method,
+				DummyClass*& targetObject, MethodPointer<DummyClass>& targetMethod)
+			{
+				using AdjustedThisGetter = void*(Class::*)(void);
+				using AdjustedThisGetterDummyMethod = void*(DummyClass::*)(void);
+
+				// replace code pointer with our dummy method that returns adjusted this
+				union
+				{
+					MethodPointer<Class> sourceClassMethodPointer;
+					MethodPointer<DummyClass> dummyClassMethodPointer;
+
+					AdjustedThisGetter adjustedThisGetter;
+					AdjustedThisGetterDummyMethod adjustedThisGetterDummyMethod;
+				};
+
+				sourceClassMethodPointer = _method;
+				targetMethod = dummyClassMethodPointer;
+
+				adjustedThisGetterDummyMethod = &DummyClass::getThis;
+				targetObject = (DummyClass*)(_object->*adjustedThisGetter)();
+			}
+		};
+
+		template <typename Class>
+		inline void construct(Class* _object, MethodPointer<Class> _method)
+		{
+			MethodPointerConverter<sizeof(MethodPointer<Class>), Class>::Convert(_object, _method, object, method);
+		}
 
 		DummyClass *object;
-		Method<DummyClass> method;
+		MethodPointer<DummyClass> method;
 
 	public:
 		inline Delegate() : object(nullptr), method(nullptr) {}
@@ -39,19 +121,16 @@ namespace XLib
 			*((void**)&method) = raw.method;
 		}
 
-		template <class Class>
-		inline Delegate(Class& _object, Method<Class> _method) : object((DummyClass*)&_object)
-			{ *((Method<Class>*)&method) = _method; }
+		template <class Class> inline Delegate(Class& _object, MethodPointer<Class> _method) { construct(&_object, _method); }
+		template <class Class> inline Delegate(Class* _object, MethodPointer<Class> _method) { construct(_object, _method); }
 
-		template <class Class>
-		inline Delegate(Class* _object, Method<Class> _method) : object((DummyClass*)_object)
-			{ *((Method<Class>*)&method) = _method; }
+		void destroy() { object = nullptr; method = nullptr; }
 
 		inline RawDelegate toRaw()
 		{
 			RawDelegate raw;
 			raw.object = object;
-			*((Method<DummyClass>*)&raw.method) = method;
+			*((MethodPointer<DummyClass>*)&raw.method) = method;
 			return raw;
 		}
 
