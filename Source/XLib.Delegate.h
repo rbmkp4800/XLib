@@ -44,12 +44,18 @@ namespace XLib
 			void* getThis() { return this; }
 		};
 
+		// platform specific - MSVC++ =======================================================//
+
 		static_assert(sizeof(MethodPointer<DummyClass>) == sizeof(void*), "invalid environment");
 
 		template <uint methodPointerSize, class Class>
 		struct MethodPointerConverter abstract
 		{
-			//static_assert(false, "this type of method pointer not supported");
+			static inline void Convert(Class* _object, MethodPointer<Class> _method,
+				DummyClass*& targetObject, MethodPointer<DummyClass>& targetMethod)
+			{
+				static_assert(false, "this type of method pointer not supported");
+			}
 		};
 
 		// single inheritance
@@ -72,12 +78,13 @@ namespace XLib
 		};
 
 		// virtual/multiple inheritance
-		// MSVC++ virtual method pointer structure:
+		// MSVC++ method pointer structure:
 		//		codePointer
 		//		uint32 thisAdjustmentDelta
 		//		uint32 vtableIndex
+		// replace code pointer with our dummy method that returns adjusted this
 		template <class Class>
-		class MethodPointerConverter<sizeof(void*) + sizeof(uint32) + sizeof(uint32), Class> abstract
+		class MethodPointerConverter<sizeof(void*) + sizeof(uint32) * 2, Class> abstract
 		{
 		public:
 			static inline void Convert(Class* _object, MethodPointer<Class> _method,
@@ -86,7 +93,6 @@ namespace XLib
 				using AdjustedThisGetter = void*(Class::*)(void);
 				using AdjustedThisGetterDummyMethod = void*(DummyClass::*)(void);
 
-				// replace code pointer with our dummy method that returns adjusted this
 				union
 				{
 					MethodPointer<Class> sourceClassMethodPointer;
@@ -103,6 +109,30 @@ namespace XLib
 				targetObject = (DummyClass*)(_object->*adjustedThisGetter)();
 			}
 		};
+
+		// multiple inheritance
+		// MSVC++ method pointer structure:
+		//		codePointer
+		//		uint32 thisAdjustmentDelta
+		//
+		// due to struct alignment on x64 multiple inheritance pointer is 16 bytes length,
+		//    like virtual/multiple inheritance pointer, but it's ok for this solution.
+		// just redirect to virtual/multiple inheritance
+		// for some reasons single inheritance with virtual methods in derived class
+		//    without __single_inheritance flag specified is treated 
+		template <class Class>
+		class MethodPointerConverter<sizeof(void*) + sizeof(uint32), Class> abstract
+		{
+		public:
+			static inline void Convert(Class* _object, MethodPointer<Class> _method,
+				DummyClass*& targetObject, MethodPointer<DummyClass>& targetMethod)
+			{
+				MethodPointerConverter<sizeof(void*) + sizeof(uint32) * 2, Class>::Convert(
+					_object, _method, targetObject, targetMethod);
+			}
+		};
+
+		// platform specific end ============================================================//
 
 		template <typename Class>
 		inline void construct(Class* _object, MethodPointer<Class> _method)
