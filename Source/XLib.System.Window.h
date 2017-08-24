@@ -61,6 +61,7 @@ namespace XLib
 		virtual void onMouseMove(MouseState& mouseState) {}
 		virtual void onMouseButton(MouseState& mouseState, MouseButton button, bool state) {}
 		virtual void onMouseWheel(MouseState& mouseState, float32 delta) {}
+		virtual void onCharacter(wchar character) {}
 
 	public:
 		WindowBase();

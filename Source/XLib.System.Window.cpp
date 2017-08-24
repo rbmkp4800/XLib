@@ -91,6 +91,10 @@ struct Internal::WindowInternal abstract final
 					float32(GET_WHEEL_DELTA_WPARAM(wParam)) / float32(WHEEL_DELTA));
 				break;
 
+			case WM_CHAR:
+				window->onCharacter(wchar(wParam));
+				break;
+
 			default:
 				return DefWindowProc(hWnd, message, wParam, lParam);
 				break;
