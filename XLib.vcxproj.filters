@@ -165,6 +165,7 @@
     <ClCompile Include="Source\XLib.Math.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Source\XLib.Strings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Algorithm">

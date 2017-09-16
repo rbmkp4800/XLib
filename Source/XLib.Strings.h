@@ -4,8 +4,13 @@
 
 namespace XLib
 {
-	struct Strings abstract final
+	class Strings abstract final
 	{
+	private:
+		static bool ParseSInt32(const char* string, sint32& value, const char** end);
+		static bool ParseFloat32(const char* string, float32& value, const char** end);
+
+	public:
 		static inline uintptr Length(const char* string)
 		{
 			uintptr length = 0;
@@ -41,41 +46,9 @@ namespace XLib
 		//template <uintptr length> static constexpr uintptr Length(const wchar(&)[length]) { return length - 1; }
 
 		template <typename Type>
-		static inline bool Parse(const char* string, Type& value, const char** end = nullptr) { static_assert("invalid type"); }
+		static bool Parse(const char* string, Type& value, const char** end = nullptr) { static_assert("invalid type"); }
 
-		template <>
-		static inline bool Parse<sint32>(const char* string, sint32& value, const char** end)
-		{
-			bool minus = false;
-			char c = *string;
-			if (c >= '0' && c <= '9')
-				goto label_parsingDigits;
-			
-			if (c == '-')
-				minus = true;
-			else if (c != '+')
-				return nullptr;
-
-			string++;
-			c = *string;
-
-		label_parsingDigits:
-			sint32 result = c - '0';
-			string++;
-			c = *string;
-			while (c >= '0' && c <= '9')
-			{
-				result *= 10;
-				result += c - '0';
-
-				string++;
-				c = *string;
-			}
-
-			value = minus ? -result : result;
-			if (end)
-				*end = string;
-			return true;
-		}
+		template <> static inline bool Parse<sint32>(const char* string, sint32& value, const char** end) { return ParseSInt32(string, value, end); }
+		template <> static inline bool Parse<float32>(const char* string, float32& value, const char** end) { return ParseFloat32(string, value, end); }
 	};
 }

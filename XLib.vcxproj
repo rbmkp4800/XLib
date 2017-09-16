@@ -78,6 +78,7 @@
     <ClCompile Include="Source\XLib.Math.cpp" />
     <ClCompile Include="Source\XLib.Memory.cpp" />
     <ClCompile Include="Source\XLib.Random.cpp" />
+    <ClCompile Include="Source\XLib.Strings.cpp" />
     <ClCompile Include="Source\XLib.StringWriter.cpp" />
     <ClCompile Include="Source\XLib.System.AsyncIO.cpp" />
     <ClCompile Include="Source\XLib.System.File.cpp" />
