@@ -49,12 +49,6 @@ namespace XLib
 			data[2][2] = 1.0f;
 			data[2][3] = 0.0f;
 		}
-		inline void transpose()
-		{
-			for (uint32 i = 0; i < 4; i++)
-				for (uint32 j = 0; j < 4; j++)
-					swap(data[i][j], data[j][i]);
-		}
 		inline void translation(float32 x, float32 y, float32 z)
 		{
 			data[0][0] = 1.0f;
@@ -243,14 +237,40 @@ namespace XLib
 		result[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1];
 		result[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2];
 		result[0][3] = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3];
+
 		result[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0];
 		result[1][1] = a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1];
 		result[1][2] = a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2];
 		result[1][3] = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3];
+
 		result[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0];
 		result[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1];
 		result[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2];
 		result[2][3] = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3];
+
 		return result;
+	}
+
+	// TODO: refactor order
+	// TODO: implement *=
+
+	inline float32x3 operator * (const float32x3& vector, const Matrix3x4& matrix)
+	{
+		return
+		{
+			vector.x * matrix[0][0] + vector.y * matrix[0][1] + vector.z * matrix[0][2] + matrix[0][3],
+			vector.x * matrix[1][0] + vector.y * matrix[1][1] + vector.z * matrix[1][2] + matrix[1][3],
+			vector.x * matrix[2][0] + vector.y * matrix[2][1] + vector.z * matrix[2][2] + matrix[2][3]
+		};
+	}
+	inline float32x4 operator * (const float32x4& vector, const Matrix3x4& matrix)
+	{
+		return
+		{
+			vector.x * matrix[0][0] + vector.y * matrix[0][1] + vector.z * matrix[0][2] + vector.w * matrix[0][3],
+			vector.x * matrix[1][0] + vector.y * matrix[1][1] + vector.z * matrix[1][2] + vector.w * matrix[1][3],
+			vector.x * matrix[2][0] + vector.y * matrix[2][1] + vector.z * matrix[2][2] + vector.w * matrix[2][3],
+			vector.w
+		};
 	}
 }

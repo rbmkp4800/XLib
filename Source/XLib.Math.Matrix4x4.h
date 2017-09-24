@@ -6,6 +6,8 @@
 #include "XLib.Math.h"
 #include "XLib.Vectors.Math.h"
 
+// TODO: transpose (must have same orientation as Matrix3x4)
+
 namespace XLib
 {
 	struct Matrix4x4
@@ -341,8 +343,12 @@ namespace XLib
 		result[3][1] = a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + a[3][3] * b[3][1];
 		result[3][2] = a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + a[3][3] * b[3][2];
 		result[3][3] = a[3][0] * b[0][3] + a[3][1] * b[1][3] + a[3][2] * b[2][3] + a[3][3] * b[3][3];
+
 		return result;
 	}
+
+	// TODO: refactor order
+	// TODO: implement *=
 
 	inline float32x4 operator * (const float32x3& vector, const Matrix4x4& matrix)
 	{

@@ -27,19 +27,23 @@ namespace XLib
 	class CyclicQueue<Type, CyclicQueueStoragePolicy::External>
 	{
 	private:
-		Type *buffer;
-		uint32 bufferSize;
-		uint32 frontIdx, backIdx;
+		Type *buffer = nullptr;
+		uint32 bufferSize = 0;
+		uint32 frontIdx = 0, backIdx = 0;
 
 	public:
-		inline CyclicQueue() : buffer(nullptr) {}
+		inline void initialize(Type* storage, uint32 capacity)
+		{
+			buffer = storage;
+			bufferSize = capacity;
+			frontIdx = 0;
+			backIdx = 0;
+		}
 
-		inline uint32 capacity() { return bufferSize; }
-		inline uint32 size() { return (bufferSize + backIdx - frontIdx) % bufferSize; }
+		inline uint32 getCapacity() { return bufferSize; }
+		inline uint32 getSize() { return (bufferSize + backIdx - frontIdx) % bufferSize; }
 		inline bool isFull() { return (backIdx + 1) % bufferSize == frontIdx; }
 		inline bool isEmpty() { return frontIdx == backIdx; }
-
-		inline void initialize(void* storage, uint32 capacity);
 
 		inline void pushBack(const Type& value)
 		{
@@ -60,14 +64,14 @@ namespace XLib
 		{
 			Debug::CrashConditionOnDebug(isEmpty(), DbgMsgFmt("queue is empty"));
 
-			buffer[frontIdx]->~Type();
+			buffer[frontIdx].~Type();
 			frontIdx = (frontIdx + 1) % bufferSize;
 		}
 
 		inline Type& front() { return buffer[frontIdx]; }
-		inline Type& back() { return buffer[(backIdx + bufferSize + 1) % bufferSize]; }
+		inline Type& back() { return buffer[(backIdx + bufferSize - 1) % bufferSize]; }
 
-		inline Type& operator [] (uint32 index) { return buffer[frontIdx + index % bufferSize]; }
+		inline Type& operator [] (uint32 index) { return buffer[(frontIdx + index) % bufferSize]; }
 	};
 
 	template <typename Type, uint32 bufferSize>
