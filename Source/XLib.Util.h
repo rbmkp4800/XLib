@@ -2,8 +2,12 @@
 
 #include "XLib.Types.h"
 
+#ifndef __PLACEMENT_NEW_INLINE
+
 inline void* operator new (size_t, void* block) { return block; }
 inline void operator delete (void* block, void*) {}
+
+#endif
 
 template <typename type, uint32 size> constexpr uint32 countof(type(&)[size]) { return size; }
 template <typename type, uint32 size> constexpr uint32 byteSizeOfArray(type(&)[size]) { return size * sizeof(type); }
