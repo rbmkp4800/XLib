@@ -3,6 +3,43 @@
 #include "XLib.Types.h"
 #include "XLib.Util.h"
 
+// TODO: investigate performance
+
+template <typename ElementType>
+void QuickSort(ElementType* buffer, uint32 elementsCount)
+{
+	struct Internal
+	{
+		static void QuickSort(ElementType* buffer, sint32 lo, sint32 hi)
+		{
+			sint32 i = lo, j = hi;
+			ElementType pivot = buffer[(lo + hi) / 2];
+
+			do
+			{
+				while (buffer[i] < pivot)
+					i++;
+				while (pivot < buffer[j])
+					j--;
+				if (i <= j)
+				{
+					swap(buffer[i], buffer[j]);
+					i++; j--;
+				}
+			} while (i <= j);
+
+			if (lo < j)
+				Internal::QuickSort(buffer, lo, j);
+			if (i < hi)
+				Internal::QuickSort(buffer, i, hi);
+		}
+	};
+
+	Internal::QuickSort(buffer, 0, elementsCount - 1);
+}
+
+/*
+
 template <typename BufferType>
 void QuickSort(BufferType& buffer, uint32 elementsCount)
 {
@@ -40,3 +77,5 @@ void QuickSort(BufferType& buffer, uint32 elementsCount)
 			stack[stackHigh++].set(frame.low, j);
 	}
 }
+
+*/

@@ -31,7 +31,7 @@ inline typename removeReference<resultType>::type as(argumentType&& value)
 template <typename resultType, typename argumentType>
 inline typename removeReference<resultType>::type& as(argumentType& value)
 {
-	static_assert(sizeof(resultType) == sizeof(argumentType), "Xlib.Util: as() function types must be same size");
+	static_assert(sizeof(resultType) == sizeof(argumentType), "XLib.Util: as() function types must be same size");
 	return *((resultType*)&value);
 }
 template <typename resultType, typename argumentType>
@@ -44,15 +44,6 @@ inline void swap(type& a, type& b)
 	a = move(b);
 	b = move(tmp);
 }
-
-template <> inline void swap<uint8>(uint8& a, uint8& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<uint16>(uint16& a, uint16& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<uint32>(uint32& a, uint32& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<uint64>(uint64& a, uint64& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<sint8>(sint8& a, sint8& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<sint16>(sint16& a, sint16& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<sint32>(sint32& a, sint32& b) { a ^= b; b ^= a; a ^= b; }
-template <> inline void swap<sint64>(sint64& a, sint64& b) { a ^= b; b ^= a; a ^= b; }
 
 #undef min
 #undef max
