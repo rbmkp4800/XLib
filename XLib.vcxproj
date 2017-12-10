@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\XLib.Color.h" />
     <ClInclude Include="Source\XLib.Math.Quaternion.h" />
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
@@ -30,6 +31,10 @@
     <ClInclude Include="Source\XLib.Debug.h" />
     <ClInclude Include="Source\XLib.Delegate.h" />
     <ClInclude Include="Source\XLib.Math.Matrix3x4.h" />
+    <ClInclude Include="Source\XLib.Platform.COMPtr.h" />
+    <ClInclude Include="Source\XLib.Platform.D3D11.Helpers.h" />
+    <ClInclude Include="Source\XLib.Platform.D3D12.Helpers.h" />
+    <ClInclude Include="Source\XLib.Platform.DXGI.Helpers.h" />
     <ClInclude Include="Source\XLib.PoolAllocator.h" />
     <ClInclude Include="Source\XLib.Program.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
@@ -38,7 +43,7 @@
     <ClInclude Include="Source\XLib.Float.Conversion.h" />
     <ClInclude Include="Source\XLib.Heap.h" />
     <ClInclude Include="Source\XLib.Containers.Vector.h" />
-    <ClInclude Include="Source\XLib.Math.Matrix3x2.h" />
+    <ClInclude Include="Source\XLib.Math.Matrix2x3.h" />
     <ClInclude Include="Source\XLib.Math.Matrix4x4.h" />
     <ClInclude Include="Source\XLib.NonCopyable.h" />
     <ClInclude Include="Source\XLib.Math.h" />
@@ -73,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="Source\XLib.Crypto.CRC.cpp" />
     <ClCompile Include="Source\XLib.Debug.cpp" />
+    <ClCompile Include="Source\XLib.Platform.COMPtr.cpp" />
     <ClCompile Include="Source\XLib.Program.cpp" />
     <ClCompile Include="Source\XLib.Heap.cpp" />
     <ClCompile Include="Source\XLib.Math.cpp" />
@@ -167,6 +173,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,6 +190,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -198,6 +206,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -218,6 +227,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

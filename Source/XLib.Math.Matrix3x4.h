@@ -85,7 +85,9 @@ namespace XLib
 		}
 		inline void rotationX(float32 angle)
 		{
-			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
+			float32 sin = Math::Sin(angle);
+			float32 cos = Math::Cos(angle);
+
 			data[0][0] = 1.0f;
 			data[0][1] = 0.0f;
 			data[0][2] = 0.0f;
@@ -103,7 +105,9 @@ namespace XLib
 		}
 		inline void rotationY(float32 angle)
 		{
-			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
+			float32 sin = Math::Sin(angle);
+			float32 cos = Math::Cos(angle);
+
 			data[0][0] = cos;
 			data[0][1] = 0.0f;
 			data[0][2] = sin;
@@ -121,7 +125,9 @@ namespace XLib
 		}
 		inline void rotationZ(float32 angle)
 		{
-			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
+			float32 sin = Math::Sin(angle);
+			float32 cos = Math::Cos(angle);
+
 			data[0][0] = cos;
 			data[0][1] = -sin;
 			data[0][2] = 0.0f;
