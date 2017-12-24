@@ -7,6 +7,7 @@
 #include "XLib.Vectors.Math.h"
 
 // TODO: transpose (must have same orientation as Matrix3x4)
+// TODO: implement *=
 
 namespace XLib
 {
@@ -324,6 +325,7 @@ namespace XLib
 	inline Matrix4x4 operator * (const Matrix4x4& a, const Matrix4x4& b)
 	{
 		Matrix4x4 result;
+
 		result[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
 		result[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1] + a[0][3] * b[3][1];
 		result[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2] + a[0][3] * b[3][2];
@@ -348,22 +350,24 @@ namespace XLib
 	}
 
 	// TODO: refactor order
-	// TODO: implement *=
-
 	inline float32x4 operator * (const float32x3& vector, const Matrix4x4& matrix)
 	{
-		return float32x4(
+		return
+		{
 			vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0] + matrix[3][0],
 			vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + matrix[3][1],
 			vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + matrix[3][2],
-			vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + matrix[3][3]);
+			vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + matrix[3][3],
+		};
 	}
 	inline float32x4 operator * (const float32x4& vector, const Matrix4x4& matrix)
 	{
-		return float32x4(
+		return
+		{
 			vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0] + vector.w * matrix[3][0],
 			vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + vector.w * matrix[3][1],
 			vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + vector.w * matrix[3][2],
-			vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + vector.w * matrix[3][3]);
+			vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + vector.w * matrix[3][3],
+		};
 	}
 }

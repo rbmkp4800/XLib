@@ -4,6 +4,8 @@
 #include "XLib.Vectors.h"
 #include "XLib.Math.h"
 
+// TODO: implement *=
+
 namespace XLib
 {
 	struct Matrix2x3
@@ -206,21 +208,28 @@ namespace XLib
 		}*/
 	};
 
-	inline float32x2 operator * (const float32x2& vector, const Matrix2x3& matrix)
-	{
-		return float32x2(
-			matrix[0][0] * vector.x + matrix[1][0] * vector.y + matrix[2][0],
-			matrix[0][1] * vector.x + matrix[1][1] * vector.y + matrix[2][1]);
-	}
 	inline Matrix2x3 operator * (const Matrix2x3& a, const Matrix2x3& b)
 	{
 		Matrix2x3 result;
-		result[0][0] = a[0][0] * b[0][0] + a[1][0] * b[0][1];
-		result[0][1] = a[0][1] * b[0][0] + a[1][1] * b[0][1];
-		result[1][0] = a[0][0] * b[1][0] + a[1][0] * b[1][1];
-		result[1][1] = a[0][1] * b[1][0] + a[1][1] * b[1][1];
-		result[2][0] = a[0][0] * b[2][0] + a[1][0] * b[2][1] + a[2][0];
-		result[2][1] = a[0][1] * b[2][0] + a[1][1] * b[2][1] + a[2][1];
+
+		result[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0];
+		result[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1];
+		result[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2];
+
+		result[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0];
+		result[1][1] = a[1][0] * b[0][1] + a[1][1] * b[1][1];
+		result[1][2] = a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2];
+
 		return result;
+	}
+
+	// TODO: refactor order
+	inline float32x2 operator * (const float32x2& vector, const Matrix2x3& matrix)
+	{
+		return
+		{
+			matrix[0][0] * vector.x + matrix[1][0] * vector.y + matrix[2][0],
+			matrix[0][1] * vector.x + matrix[1][1] * vector.y + matrix[2][1],
+		};
 	}
 }

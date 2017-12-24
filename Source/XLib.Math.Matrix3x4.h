@@ -6,6 +6,8 @@
 #include "XLib.Math.h"
 #include "XLib.Vectors.Math.h"
 
+// TODO: implement *=
+
 namespace XLib
 {
 	struct Matrix3x4
@@ -239,6 +241,7 @@ namespace XLib
 	inline Matrix3x4 operator * (const Matrix3x4& a, const Matrix3x4& b)
 	{
 		Matrix3x4 result;
+
 		result[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0];
 		result[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1];
 		result[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2];
@@ -258,8 +261,6 @@ namespace XLib
 	}
 
 	// TODO: refactor order
-	// TODO: implement *=
-
 	inline float32x3 operator * (const float32x3& vector, const Matrix3x4& matrix)
 	{
 		return
