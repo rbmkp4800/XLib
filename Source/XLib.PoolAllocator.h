@@ -17,7 +17,7 @@ namespace XLib
 			{ static_assert(minBufferSizeLog2 <= maxBufferSizeLog2, "invalid params"); };
 	};
 
-	template <typename Type, typename HeapUsagePolicy = PoolAllocatorHeapUsagePolicy::SingleDynamicChunk>
+	template <typename Type, typename HeapUsagePolicy>
 	class PoolAllocator;
 
 	template <typename Type>

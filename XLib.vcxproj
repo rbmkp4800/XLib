@@ -20,13 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\XLib.Color.h" />
+    <ClInclude Include="Source\XLib.Containers.IntrusiveDoubleLinkedList.h" />
     <ClInclude Include="Source\XLib.Math.Quaternion.h" />
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
     <ClInclude Include="Source\XLib.Allocator.h" />
     <ClInclude Include="Source\XLib.Containers.BinaryHeap.h" />
     <ClInclude Include="Source\XLib.Containers.CyclicQueue.h" />
-    <ClInclude Include="Source\XLib.Containers.MultiSequentialSet.h" />
+    <ClInclude Include="Source\XLib.Containers.IntrusiveSet.h" />
     <ClInclude Include="Source\XLib.Crypto.CRC.h" />
     <ClInclude Include="Source\XLib.Debug.h" />
     <ClInclude Include="Source\XLib.Delegate.h" />
@@ -38,7 +39,7 @@
     <ClInclude Include="Source\XLib.PoolAllocator.h" />
     <ClInclude Include="Source\XLib.Program.h" />
     <ClInclude Include="Source\XLib.Containers.Set.h" />
-    <ClInclude Include="Source\XLib.Containers.List.h" />
+    <ClInclude Include="Source\XLib.Containers.DoubleLinkedList.h" />
     <ClInclude Include="Source\XLib.Float.Consts.h" />
     <ClInclude Include="Source\XLib.Float.Conversion.h" />
     <ClInclude Include="Source\XLib.Heap.h" />

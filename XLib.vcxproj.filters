@@ -19,9 +19,6 @@
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h">
       <Filter>Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Containers.List.h">
-      <Filter>Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.Containers.Set.h">
       <Filter>Containers</Filter>
     </ClInclude>
@@ -86,9 +83,6 @@
     <ClInclude Include="Source\XLib.System.Threading.ReadersWriterLock.h">
       <Filter>System\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Containers.MultiSequentialSet.h">
-      <Filter>Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\XLib.Containers.BinaryHeap.h">
       <Filter>Containers</Filter>
     </ClInclude>
@@ -131,6 +125,14 @@
     <ClInclude Include="Source\XLib.Color.h" />
     <ClInclude Include="Source\XLib.Math.Matrix2x3.h">
       <Filter>Math</Filter>
+    <ClInclude Include="Source\XLib.Containers.IntrusiveSet.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.DoubleLinkedList.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\XLib.Containers.IntrusiveDoubleLinkedList.h">
+      <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,13 @@
 #include "XLib.NonCopyable.h"
 #include "XLib.PoolAllocator.h"
 
+// TODO: remove all "preallocated" shit
+// TODO: refactor allocators (make it template argument)
+// TODO: rewrite using intrusive version
+// TODO: change comparator to "less"
+// TODO: if element already exists - return invalid iterator instead of
+//			replacing old element
+
 namespace XLib
 {
 	struct SetStoragePolicy abstract final
@@ -160,7 +167,7 @@ namespace XLib
 
 		public:
 			inline Type& get() { return current->value; }
-			inline bool isValid() { return current ? true : false; }
+			inline bool isValid() { return current != nullptr; }
 		};
 
 		class PreAllocatedElementHandle
