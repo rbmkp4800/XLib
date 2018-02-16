@@ -6,8 +6,10 @@
 #include "XLib.Math.h"
 #include "XLib.Vectors.Math.h"
 
-// TODO: transpose (must have same orientation as Matrix3x4)
+// TODO: maybe move some implementation to .cpp file
+// TODO: transpose (to have same orientation as Matrix3x4) or not??
 // TODO: implement *=
+// TODO: refactor order
 
 namespace XLib
 {
@@ -40,7 +42,13 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 0.0f;
 		}
-		inline void identity()
+		inline void transpose()
+		{
+			for (uint32 i = 0; i < 4; i++)
+				for (uint32 j = 0; j < 4; j++)
+					swap(data[i][j], data[j][i]);
+		}
+		inline void setIdentity()
 		{
 			data[0][0] = 1.0f;
 			data[0][1] = 0.0f;
@@ -62,13 +70,7 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 1.0f;
 		}
-		inline void transpose()
-		{
-			for (uint32 i = 0; i < 4; i++)
-				for (uint32 j = 0; j < 4; j++)
-					swap(data[i][j], data[j][i]);
-		}
-		inline void translation(float32 x, float32 y, float32 z)
+		inline void setTranslation(float32 x, float32 y, float32 z)
 		{
 			data[0][0] = 1.0f;
 			data[0][1] = 0.0f;
@@ -90,7 +92,7 @@ namespace XLib
 			data[3][2] = z;
 			data[3][3] = 1.0f;
 		}
-		inline void scale(float32 x, float32 y, float32 z)
+		inline void setScale(float32 x, float32 y, float32 z)
 		{
 			data[0][0] = x;
 			data[0][1] = 0.0f;
@@ -112,7 +114,7 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 1.0f;
 		}
-		inline void rotationX(float32 angle)
+		inline void setRotationX(float32 angle)
 		{
 			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
 			data[0][0] = 1.0f;
@@ -135,7 +137,7 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 1.0f;
 		}
-		inline void rotationY(float32 angle)
+		inline void setRotationY(float32 angle)
 		{
 			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
 			data[0][0] = cos;
@@ -158,7 +160,7 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 1.0f;
 		}
-		inline void rotationZ(float32 angle)
+		inline void setRotationZ(float32 angle)
 		{
 			float32 sin = Math::Sin(angle), cos = Math::Cos(angle);
 			data[0][0] = cos;
@@ -181,7 +183,7 @@ namespace XLib
 			data[3][2] = 0.0f;
 			data[3][3] = 1.0f;
 		}
-		inline void perspective(float32 fov, float32 aspect, float32 zNear, float32 zFar)
+		inline void setPerspective(float32 fov, float32 aspect, float32 zNear, float32 zFar)
 		{
 			float32 yScale = 1.0f / Math::Tan(fov / 2.0f);
 			float32 xScale = yScale / aspect;
@@ -206,7 +208,7 @@ namespace XLib
 			data[3][2] = zNear * zFar / (zNear - zFar);
 			data[3][3] = 0.0f;
 		}
-		inline void lookAtCentered(const float32x3& position, const float32x3& centeredTarget, const float32x3& up)
+		inline void setLookAtCentered(const float32x3& position, const float32x3& centeredTarget, const float32x3& up)
 		{
 			float32x3 zaxis = -VectorMath::Normalize(centeredTarget);
 			float32x3 xaxis = VectorMath::Normalize(VectorMath::Cross(up, zaxis));
@@ -232,15 +234,55 @@ namespace XLib
 			data[3][2] = VectorMath::Dot(zaxis, position);
 			data[3][3] = 1.0f;
 		}
-		inline void lookAt(const float32x3& position, const float32x3& target, const float32x3& up)
+		inline void setLookAt(const float32x3& position, const float32x3& target, const float32x3& up)
 		{
-			lookAtCentered(position, target - position, up);
+			setLookAtCentered(position, target - position, up);
+		}
+		inline void setInverse(const Matrix4x4& a)
+		{
+			// https://www.geometrictools.com/Documentation/LaplaceExpansionTheorem.pdf
+
+			float32 s0 = a[0][0] * a[1][1] - a[1][0] * a[0][1];
+			float32 s1 = a[0][0] * a[1][2] - a[1][0] * a[0][2];
+			float32 s2 = a[0][0] * a[1][3] - a[1][0] * a[0][3];
+			float32 s3 = a[0][1] * a[1][2] - a[1][1] * a[0][2];
+			float32 s4 = a[0][1] * a[1][3] - a[1][1] * a[0][3];
+			float32 s5 = a[0][2] * a[1][3] - a[1][2] * a[0][3];
+
+			float32 c5 = a[2][2] * a[3][3] - a[3][2] * a[2][3];
+			float32 c4 = a[2][1] * a[3][3] - a[3][1] * a[2][3];
+			float32 c3 = a[2][1] * a[3][2] - a[3][1] * a[2][2];
+			float32 c2 = a[2][0] * a[3][3] - a[3][0] * a[2][3];
+			float32 c1 = a[2][0] * a[3][2] - a[3][0] * a[2][2];
+			float32 c0 = a[2][0] * a[3][1] - a[3][0] * a[2][1];
+
+			float32 rdet = 1.0f / (s0 * c5 - s1 * c4 + s2 * c3 + s3 * c2 - s4 * c1 + s5 * c0);
+
+			data[0][0] = ( + a[1][1] * c5 - a[1][2] * c4 + a[1][3] * c3) * rdet;
+			data[0][1] = ( - a[0][1] * c5 + a[0][2] * c4 - a[0][3] * c3) * rdet;
+			data[0][2] = ( + a[3][1] * s5 - a[3][2] * s4 + a[3][3] * s3) * rdet;
+			data[0][3] = ( - a[2][1] * s5 + a[2][2] * s4 - a[2][3] * s3) * rdet;
+
+			data[1][0] = ( - a[1][0] * c5 + a[1][2] * c2 - a[1][3] * c1) * rdet;
+			data[1][1] = ( + a[0][0] * c5 - a[0][2] * c2 + a[0][3] * c1) * rdet;
+			data[1][2] = ( - a[3][0] * s5 + a[3][2] * s2 - a[3][3] * s1) * rdet;
+			data[1][3] = ( + a[2][0] * s5 - a[2][2] * s2 + a[2][3] * s1) * rdet;
+
+			data[2][0] = ( + a[1][0] * c4 - a[1][1] * c2 + a[1][3] * c0) * rdet;
+			data[2][1] = ( - a[0][0] * c4 + a[0][1] * c2 - a[0][3] * c0) * rdet;
+			data[2][2] = ( + a[3][0] * s4 - a[3][1] * s2 + a[3][3] * s0) * rdet;
+			data[2][3] = ( - a[2][0] * s4 + a[2][1] * s2 - a[2][3] * s0) * rdet;
+
+			data[3][0] = ( - a[1][0] * c3 + a[1][1] * c1 - a[1][2] * c0) * rdet;
+			data[3][1] = ( + a[0][0] * c3 - a[0][1] * c1 + a[0][2] * c0) * rdet;
+			data[3][2] = ( - a[3][0] * s3 + a[3][1] * s1 - a[3][2] * s0) * rdet;
+			data[3][3] = ( + a[2][0] * s3 - a[2][1] * s1 + a[2][2] * s0) * rdet;
 		}
 
 		static inline Matrix4x4 Identity()
 		{
 			Matrix4x4 result;
-			result.identity();
+			result.setIdentity();
 			return result;
 		}
 		static inline Matrix4x4 Transpose(const Matrix4x4& matrix)
@@ -252,75 +294,70 @@ namespace XLib
 		static inline Matrix4x4 Translation(float32 x, float32 y, float32 z)
 		{
 			Matrix4x4 result;
-			result.translation(x, y, z);
+			result.setTranslation(x, y, z);
 			return result;
 		}
 		static inline Matrix4x4 Translation(float32x3 vector)
 		{
 			Matrix4x4 result;
-			result.translation(vector.x, vector.y, vector.z);
+			result.setTranslation(vector.x, vector.y, vector.z);
 			return result;
 		}
 		static inline Matrix4x4 Scale(float32 x, float32 y, float32 z)
 		{
 			Matrix4x4 result;
-			result.scale(x, y, z);
+			result.setScale(x, y, z);
 			return result;
 		}
 		static inline Matrix4x4 Scale(float32x3 vector)
 		{
 			Matrix4x4 result;
-			result.scale(vector.x, vector.y, vector.z);
+			result.setScale(vector.x, vector.y, vector.z);
 			return result;
 		}
 		static inline Matrix4x4 RotationX(float32 angle)
 		{
 			Matrix4x4 result;
-			result.rotationX(angle);
+			result.setRotationX(angle);
 			return result;
 		}
 		static inline Matrix4x4 RotationY(float32 angle)
 		{
 			Matrix4x4 result;
-			result.rotationY(angle);
+			result.setRotationY(angle);
 			return result;
 		}
 		static inline Matrix4x4 RotationZ(float32 angle)
 		{
 			Matrix4x4 result;
-			result.rotationZ(angle);
+			result.setRotationZ(angle);
 			return result;
 		}
 		static inline Matrix4x4 Perspective(float32 fov, float32 aspect, float32 zNear, float32 zFar)
 		{
 			Matrix4x4 result;
-			result.perspective(fov, aspect, zNear, zFar);
+			result.setPerspective(fov, aspect, zNear, zFar);
 			return result;
 		}
 		static inline Matrix4x4 LookAt(const float32x3& position, const float32x3& target, const float32x3& up)
 		{
 			Matrix4x4 result;
-			result.lookAt(position, target, up);
+			result.setLookAt(position, target, up);
 			return result;
 		}
 		static inline Matrix4x4 LookAtCentered(const float32x3& position, const float32x3& centerdTarget, const float32x3& up)
 		{
 			Matrix4x4 result;
-			result.lookAtCentered(position, centerdTarget, up);
+			result.setLookAtCentered(position, centerdTarget, up);
+			return result;
+		}
+		static inline Matrix4x4 Inverse(const Matrix4x4& that)
+		{
+			Matrix4x4 result;
+			result.setInverse(that);
 			return result;
 		}
 	};
-
-	/*inline Matrix4x4 operator * (const Matrix4x4& matrix1, const Matrix4x4& matrix2)
-	{
-		Matrix4x4 result;
-		result.clear();
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				for (int k = 0; k < 4; k++)
-					result[i][j] += matrix1[i][k] * matrix2[k][j];
-		return result;
-	}*/
 
 	inline Matrix4x4 operator * (const Matrix4x4& a, const Matrix4x4& b)
 	{
@@ -349,7 +386,6 @@ namespace XLib
 		return result;
 	}
 
-	// TODO: refactor order
 	inline float32x4 operator * (const float32x3& vector, const Matrix4x4& matrix)
 	{
 		return
