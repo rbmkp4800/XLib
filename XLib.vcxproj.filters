@@ -125,6 +125,7 @@
     <ClInclude Include="Source\XLib.Color.h" />
     <ClInclude Include="Source\XLib.Math.Matrix2x3.h">
       <Filter>Math</Filter>
+    </ClInclude>
     <ClInclude Include="Source\XLib.Containers.IntrusiveSet.h">
       <Filter>Containers</Filter>
     </ClInclude>
