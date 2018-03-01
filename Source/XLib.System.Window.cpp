@@ -114,7 +114,7 @@ WindowBase::~WindowBase()
 	}
 }
 
-void WindowBase::create(uint16 width, uint16 height, wchar* title, bool visible)
+void WindowBase::create(uint16 width, uint16 height, const wchar* title, bool visible)
 {
 	HINSTANCE hInstance = GetModuleHandle(nullptr);
 

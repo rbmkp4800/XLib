@@ -67,7 +67,7 @@ namespace XLib
 		WindowBase();
 		~WindowBase();
 
-		void create(uint16 width, uint16 height, wchar* title, bool visible = true);
+		void create(uint16 width, uint16 height, const wchar* title, bool visible = true);
 		void show(bool state);
 		void setFocus();
 		void destroy();
