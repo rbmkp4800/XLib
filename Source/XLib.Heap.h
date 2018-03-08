@@ -14,7 +14,7 @@ namespace XLib
 		static void Release(void* ptr);
 
 		template <typename Type>
-		static Type* Allocate(uintptr count) { return to<Type*>(Allocate(sizeof(Type) * count)); }
+		static Type* Allocate(uintptr count = 1) { return to<Type*>(Allocate(sizeof(Type) * count)); }
 	};
 
 	template <typename Type>

@@ -6,6 +6,10 @@
 #include "XLib.System.Network.h"
 #include "XLib.System.AsyncIO.h"
 
+// TODO: implement proper disconnect/destroy
+//		https://msdn.microsoft.com/en-us/library/windows/desktop/ms738547(v=vs.85).aspx
+// TODO: implement error codes
+
 namespace XLib
 {
 	class TCPSocket;

@@ -64,6 +64,8 @@ namespace XLib
 			address1.address.ipv4.address == address2.address.ipv4.address;
 	}
 
+	inline bool operator != (const IPAddress& address1, const IPAddress& address2) { return !(address1 == address2); }
+
 	class DNS abstract final
 	{
 
