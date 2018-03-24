@@ -81,7 +81,8 @@ inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Buffer(UINT64 size,
 }
 
 inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Texture2D(DXGI_FORMAT format,
-	UINT width, UINT height, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE)
+	UINT width, UINT height, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE,
+	UINT mipLevels = 0)
 {
 	D3D12_RESOURCE_DESC desc;
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -89,7 +90,26 @@ inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Texture2D(DXGI_FORMAT format,
 	desc.Width = width;
 	desc.Height = height;
 	desc.DepthOrArraySize = 1;
-	desc.MipLevels = 0;
+	desc.MipLevels = mipLevels;
+	desc.Format = format;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	desc.Flags = flags;
+	return desc;
+}
+
+inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Texture3D(DXGI_FORMAT format,
+	UINT width, UINT height, UINT depth,
+	D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE, UINT mipLevels = 0)
+{
+	D3D12_RESOURCE_DESC desc;
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	desc.Alignment = 0;
+	desc.Width = width;
+	desc.Height = height;
+	desc.DepthOrArraySize = depth;
+	desc.MipLevels = mipLevels;
 	desc.Format = format;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
