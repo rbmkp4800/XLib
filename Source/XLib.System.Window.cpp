@@ -39,8 +39,9 @@ struct Internal::WindowInternal abstract final
 				GetClientRect(hWnd, &clientRect);
 				window->onCreate(creationArgs(uint16(clientRect.right - clientRect.left),
 					uint16(clientRect.bottom - clientRect.top)));
-			}
+
 				break;
+			}
 
 			case WM_PAINT:
 			{
@@ -48,8 +49,9 @@ struct Internal::WindowInternal abstract final
 				BeginPaint(HWND(window->handle), &ps);
 				window->onRedraw();
 				EndPaint(HWND(window->handle), &ps);
-			}
+
 				break;
+			}
 
 			case WM_DESTROY:
 				window->onDestroy();
@@ -57,6 +59,7 @@ struct Internal::WindowInternal abstract final
 
 			case WM_SIZE:
 				window->onResize(resizingArgs(LOWORD(lParam), HIWORD(lParam)));
+				break;
 
 			case WM_KEYDOWN:
 				window->onKeyboard(VirtualKey(wParam), true);

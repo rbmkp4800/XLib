@@ -45,6 +45,16 @@ namespace XLib
 			data[1][1] = 1.0f;
 			data[1][2] = y;
 		}
+		inline void scale(float32 scale)
+		{
+			data[0][0] = scale;
+			data[0][1] = 0.0f;
+			data[0][2] = 0.0f;
+
+			data[1][0] = 0.0f;
+			data[1][1] = scale;
+			data[1][2] = 0.0f;
+		}
 		inline void scale(float32 xscale, float32 yscale)
 		{
 			data[0][0] = xscale;
@@ -152,6 +162,12 @@ namespace XLib
 			result.translation(translationVector);
 			return result;
 		}
+		static inline Matrix2x3 Scale(float32 scale)
+		{
+			Matrix2x3 matrix;
+			matrix.scale(scale);
+			return matrix;
+		}
 		static inline Matrix2x3 Scale(float32 x, float32 y)
 		{
 			Matrix2x3 matrix;
@@ -228,8 +244,8 @@ namespace XLib
 	{
 		return
 		{
-			matrix[0][0] * vector.x + matrix[1][0] * vector.y + matrix[2][0],
-			matrix[0][1] * vector.x + matrix[1][1] * vector.y + matrix[2][1],
+			matrix[0][0] * vector.x + matrix[0][1] * vector.y + matrix[0][2],
+			matrix[1][0] * vector.x + matrix[1][1] * vector.y + matrix[1][2],
 		};
 	}
 }

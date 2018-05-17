@@ -45,16 +45,38 @@ struct vec4
 };
 
 template <typename type1, typename type2> constexpr inline bool operator == (const vec2<type1>& a, const vec2<type2>& b) { return a.x == b.x && a.y == b.y; }
+template <typename type1, typename type2> constexpr inline bool operator != (const vec2<type1>& a, const vec2<type2>& b) { return a.x != b.x && a.y != b.y; }
 template <typename type1, typename type2> constexpr inline bool operator == (const vec3<type1>& a, const vec3<type2>& b) { return a.x == b.x && a.y == b.y && a.z == b.z; }
+template <typename type1, typename type2> constexpr inline bool operator != (const vec3<type1>& a, const vec3<type2>& b) { return a.x != b.x && a.y != b.y && a.z != b.z; }
 template <typename type1, typename type2> constexpr inline bool operator == (const vec4<type1>& a, const vec4<type2>& b) { return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; }
+template <typename type1, typename type2> constexpr inline bool operator != (const vec4<type1>& a, const vec4<type2>& b) { return a.x != b.x && a.y != b.y && a.z != b.z && a.w != b.w; }
 
 template <typename type>
 struct rectvar
 {
-	type left, top, right, bottom;
+	union
+	{
+		struct
+		{
+			type left, top, right, bottom;
+		};
+
+		struct
+		{
+			vec2<type> leftTop;
+			vec2<type> rightBottom;
+		};
+	};
 
 	rectvar() = default;
 	constexpr inline rectvar(type _left, type _top, type _right, type _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) {}
+	constexpr inline rectvar(const vec2<type>& _leftTop, const vec2<type>& _rightBottom) : leftTop(_leftTop), rightBottom(_rightBottom) {}
+	template <typename type1> constexpr inline rectvar(const rectvar<type1>& a) : left(type(a.left)), top(type(a.top)), right(type(a.right)), bottom(type(a.bottom)) {}
+
+	constexpr inline type getWidth() const { return right - left; }
+	constexpr inline type getHeight() const { return bottom - top; }
+
+	constexpr inline vec2<type> getSize() const { return vec2<type>(right - left, bottom - top); }
 };
 
 using uint8x2 = vec2<uint8>;

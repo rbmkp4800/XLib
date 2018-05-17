@@ -24,7 +24,6 @@
     <ClInclude Include="Source\XLib.Math.Quaternion.h" />
     <ClInclude Include="Source\XLib.Algorithm.QuickSort.h" />
     <ClInclude Include="Source\XLib.Algorithm.RadixSort.h" />
-    <ClInclude Include="Source\XLib.Allocator.h" />
     <ClInclude Include="Source\XLib.Containers.BinaryHeap.h" />
     <ClInclude Include="Source\XLib.Containers.CyclicQueue.h" />
     <ClInclude Include="Source\XLib.Containers.IntrusiveSet.h" />
@@ -54,14 +53,12 @@
     <ClInclude Include="Source\XLib.StringWriter.h" />
     <ClInclude Include="Source\XLib.System.AsyncIO.h" />
     <ClInclude Include="Source\XLib.System.File.h" />
-    <ClInclude Include="Source\XLib.System.FileHandle.h" />
     <ClInclude Include="Source\XLib.System.FileSystem.h" />
     <ClInclude Include="Source\XLib.System.NamedPipe.h" />
     <ClInclude Include="Source\XLib.System.Network.h" />
     <ClInclude Include="Source\XLib.System.Network.Socket.h" />
     <ClInclude Include="Source\XLib.System.Threading.Atomics.h" />
     <ClInclude Include="Source\XLib.System.Threading.Barrier.h" />
-    <ClInclude Include="Source\XLib.System.Threading.CyclicBarrier.h" />
     <ClInclude Include="Source\XLib.System.Threading.CyclicQueue.h" />
     <ClInclude Include="Source\XLib.System.Threading.Event.h" />
     <ClInclude Include="Source\XLib.System.Threading.h" />
@@ -197,6 +194,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;Mswsock.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -236,6 +236,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;Mswsock.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

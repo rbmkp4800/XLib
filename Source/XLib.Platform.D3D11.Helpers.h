@@ -3,26 +3,44 @@
 inline D3D11_BUFFER_DESC D3D11BufferDesc(UINT size, UINT bindFlags, UINT structureByteStride = 0,
 	UINT miscFlags = 0, D3D11_USAGE usage = D3D11_USAGE_DEFAULT, UINT cpuAccessFlags = 0)
 {
-	D3D11_BUFFER_DESC desc;
-	desc.ByteWidth = size;
-	desc.Usage = usage;
-	desc.BindFlags = bindFlags;
-	desc.CPUAccessFlags = cpuAccessFlags;
-	desc.MiscFlags = miscFlags;
-	desc.StructureByteStride = structureByteStride;
-	return desc;
+	D3D11_BUFFER_DESC result;
+	result.ByteWidth = size;
+	result.Usage = usage;
+	result.BindFlags = bindFlags;
+	result.CPUAccessFlags = cpuAccessFlags;
+	result.MiscFlags = miscFlags;
+	result.StructureByteStride = structureByteStride;
+	return result;
+}
+
+inline D3D11_TEXTURE2D_DESC D3D11Texture2DDesc(UINT width, UINT height, DXGI_FORMAT format,
+	UINT bindFlags = D3D11_BIND_SHADER_RESOURCE)
+{
+	D3D11_TEXTURE2D_DESC result;
+	result.Width = width;
+	result.Height = height;
+	result.MipLevels = 0;
+	result.ArraySize = 1;
+	result.Format = format;
+	result.SampleDesc.Count = 1;
+	result.SampleDesc.Quality = 0;
+	result.Usage = D3D11_USAGE_DEFAULT;
+	result.BindFlags = bindFlags;
+	result.CPUAccessFlags = 0;
+	result.MiscFlags = 0;
+	return result;
 }
 
 inline D3D11_BOX D3D11Box(UINT left, UINT right, UINT top = 0, UINT bottom = 1, UINT front = 0, UINT back = 1)
 {
-	D3D11_BOX box;
-	box.left = left;
-	box.top = top;
-	box.front = front;
-	box.right = right;
-	box.bottom = bottom;
-	box.back = back;
-	return box;
+	D3D11_BOX result;
+	result.left = left;
+	result.top = top;
+	result.front = front;
+	result.right = right;
+	result.bottom = bottom;
+	result.back = back;
+	return result;
 }
 
 inline D3D11_RASTERIZER_DESC D3D11RasterizerDesc(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID, D3D11_CULL_MODE cullMode = D3D11_CULL_BACK,
