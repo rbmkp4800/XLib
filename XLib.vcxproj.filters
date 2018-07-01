@@ -125,7 +125,7 @@
     <ClInclude Include="Source\XLib.Containers.DoubleLinkedList.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\XLib.Containers.IntrusiveDoubleLinkedList.h">
+    <ClInclude Include="Source\XLib.Containers.IntrusiveDoublyLinkedList.h">
       <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>
