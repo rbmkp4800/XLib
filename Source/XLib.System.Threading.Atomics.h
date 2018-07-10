@@ -75,26 +75,26 @@ namespace XLib
 		};
 
 	public:
-		template <typename Type> static inline Type Add(volatile Type& target, Type value) { return Core<sizeof(Type)>::Add((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline Type Sub(volatile Type& target, Type value) { return Core<sizeof(Type)>::Sub((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline Type Exchange(volatile Type& target, Type value) { return Core<sizeof(Type)>::Exchange((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline Type And(volatile Type& target, Type value) { return Core<sizeof(Type)>::And((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline Type Or(volatile Type& target, Type value) { return Core<sizeof(Type)>::Or((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline Type Xor(volatile Type& target, Type value) { return Core<sizeof(Type)>::Xor((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
-		template <typename Type> static inline bool CompareExchange(volatile Type& target, Type exchange, Type comparand) { return Core<sizeof(Type)>::CompareExchange((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(exchange), Core<sizeof(Type)>::Type(comparand)); }
-		template <typename Type> static inline Type Increment(volatile Type& target) { return Core<sizeof(Type)>::Increment((Core<sizeof(Type)>::Type*)&target); }
-		template <typename Type> static inline Type Decrement(volatile Type& target) { return Core<sizeof(Type)>::Decrement((Core<sizeof(Type)>::Type*)&target); }
+		template <typename Type> static inline Type Add(volatile Type& target, Type value) { return Core<sizeof(Type)>::Add((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline Type Sub(volatile Type& target, Type value) { return Core<sizeof(Type)>::Sub((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline Type Exchange(volatile Type& target, Type value) { return Core<sizeof(Type)>::Exchange((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline Type And(volatile Type& target, Type value) { return Core<sizeof(Type)>::And((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline Type Or(volatile Type& target, Type value) { return Core<sizeof(Type)>::Or((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline Type Xor(volatile Type& target, Type value) { return Core<sizeof(Type)>::Xor((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value)); }
+		template <typename Type> static inline bool CompareExchange(volatile Type& target, Type exchange, Type comparand) { return Core<sizeof(Type)>::CompareExchange((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(exchange), Core<sizeof(Type)>::Type(comparand)); }
+		template <typename Type> static inline Type Increment(volatile Type& target) { return Core<sizeof(Type)>::Increment((typename Core<sizeof(Type)>::Type*)&target); }
+		template <typename Type> static inline Type Decrement(volatile Type& target) { return Core<sizeof(Type)>::Decrement((typename Core<sizeof(Type)>::Type*)&target); }
 		template <typename Type> static inline Type Load(volatile Type& target) { return target; }
 		template <typename Type> static inline void Store(volatile Type& target, Type value) { target = value; }
 		template <typename Type> static inline Type LoadAcquire(volatile Type& target)
 		{
 			FenceAcquire();
-			Type value = Type(Core<sizeof(Type)>::Load((Core<sizeof(Type)>::Type*)&target));
+			Type value = Type(Core<sizeof(Type)>::Load((typename Core<sizeof(Type)>::Type*)&target));
 			return value;
 		}
 		template <typename Type> static inline void StoreRelease(volatile Type& target, Type value)
 		{
-			Core<sizeof(Type)>::Store((Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value));
+			Core<sizeof(Type)>::Store((typename Core<sizeof(Type)>::Type*)&target, Core<sizeof(Type)>::Type(value));
 			FenceRelease();
 		}
 
