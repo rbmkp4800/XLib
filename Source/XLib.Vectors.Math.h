@@ -37,7 +37,20 @@ namespace XLib
 
 		static inline float32x3 SphericalCoords_zZenith_xReference(float32x2 angles)
 		{
-			return float32x3(Math::Cos(angles.x) * Math::Cos(angles.y), Math::Sin(angles.x) * Math::Cos(angles.y), Math::Sin(angles.y));
+			return float32x3(
+				Math::Cos(angles.x) * Math::Cos(angles.y),
+				Math::Sin(angles.x) * Math::Cos(angles.y),
+				Math::Sin(angles.y));
+		}
+
+		static inline float32x3 SphericalCoords_zZenith_xReference(float32x2 angles, float32x2& xyNormalized)
+		{
+			xyNormalized = { Math::Cos(angles.x), Math::Sin(angles.x) };
+
+			return float32x3(
+				Math::Cos(angles.y) * xyNormalized.x,
+				Math::Cos(angles.y) * xyNormalized.y,
+				Math::Sin(angles.y));
 		}
 	};
 }
