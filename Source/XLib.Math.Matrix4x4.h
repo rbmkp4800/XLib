@@ -210,7 +210,7 @@ namespace XLib
 		}
 		inline void setLookAtCentered(const float32x3& position, const float32x3& centeredTarget, const float32x3& up)
 		{
-			float32x3 zaxis = -VectorMath::Normalize(centeredTarget);
+			float32x3 zaxis = VectorMath::Normalize(centeredTarget);
 			float32x3 xaxis = VectorMath::Normalize(VectorMath::Cross(up, zaxis));
 			float32x3 yaxis = VectorMath::Cross(zaxis, xaxis);
 
@@ -229,9 +229,9 @@ namespace XLib
 			data[2][2] = zaxis.z;
 			data[2][3] = 0.0f;
 
-			data[3][0] = VectorMath::Dot(xaxis, position);
-			data[3][1] = VectorMath::Dot(yaxis, position);
-			data[3][2] = VectorMath::Dot(zaxis, position);
+			data[3][0] = -VectorMath::Dot(xaxis, position);
+			data[3][1] = -VectorMath::Dot(yaxis, position);
+			data[3][2] = -VectorMath::Dot(zaxis, position);
 			data[3][3] = 1.0f;
 		}
 		inline void setLookAt(const float32x3& position, const float32x3& target, const float32x3& up)
@@ -404,6 +404,16 @@ namespace XLib
 			vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + vector.w * matrix[3][1],
 			vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + vector.w * matrix[3][2],
 			vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + vector.w * matrix[3][3],
+		};
+	}
+
+	inline float32x3 MultiplyBySubmatrix3x3(const float32x3& vector, const Matrix4x4& matrix)
+	{
+		return
+		{
+			vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0],
+			vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1],
+			vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2],
 		};
 	}
 }

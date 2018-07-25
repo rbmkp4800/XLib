@@ -370,10 +370,11 @@ inline D3D12_ROOT_PARAMETER D3D12RootParameter_Constants(UINT num32bitValues,
 	return param;
 }
 
-inline D3D12_CLEAR_VALUE D3D12ClearValue_D24S8(FLOAT depth, UINT8 stencil = 0)
+inline D3D12_CLEAR_VALUE D3D12ClearValue_DepthStencil(DXGI_FORMAT format,
+	FLOAT depth, UINT8 stencil = 0)
 {
 	D3D12_CLEAR_VALUE value;
-	value.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	value.Format = format;
 	value.DepthStencil.Depth = depth;
 	value.DepthStencil.Stencil = stencil;
 	return value;
@@ -460,6 +461,28 @@ inline D3D12_STATIC_SAMPLER_DESC D3D12StaticSamplerDesc_DisableMIPs(UINT shaderR
 	desc.MipLODBias = 0.0f;
 	desc.MaxAnisotropy = 1;
 	desc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	desc.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
+	desc.MinLOD = 0.0f;
+	desc.MaxLOD = 0.0f;
+	desc.ShaderRegister = shaderRegister;
+	desc.RegisterSpace = registerSpace;
+	desc.ShaderVisibility = visibility;
+	return desc;
+}
+
+inline D3D12_STATIC_SAMPLER_DESC D3D12StaticSamplerDesc(UINT shaderRegister,
+	UINT registerSpace, D3D12_SHADER_VISIBILITY visibility, D3D12_FILTER filter,
+	D3D12_TEXTURE_ADDRESS_MODE addressMode,
+	D3D12_COMPARISON_FUNC comparisonFunc = D3D12_COMPARISON_FUNC_NEVER)
+{
+	D3D12_STATIC_SAMPLER_DESC desc;
+	desc.Filter = filter;
+	desc.AddressU = addressMode;
+	desc.AddressV = addressMode;
+	desc.AddressW = addressMode;
+	desc.MipLODBias = 0.0f;
+	desc.MaxAnisotropy = 1;
+	desc.ComparisonFunc = comparisonFunc;
 	desc.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
 	desc.MinLOD = 0.0f;
 	desc.MaxLOD = 0.0f;
