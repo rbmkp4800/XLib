@@ -31,7 +31,7 @@ namespace XLib
 		static constexpr uint32 initialBufferSize = 16;
 
 		HeapPtr<Type> buffer;
-		uint32 bufferSize, vectorSize;
+		uint32 bufferSize = 0, vectorSize = 0;
 
 		inline void expandBuffer(uint32 minNewSize)
 		{
@@ -46,7 +46,9 @@ namespace XLib
 		}
 
 	public:
-		explicit inline Vector(uint32 initSize = 0)
+		Vector() = default;
+
+		explicit inline Vector(uint32 initSize)
 			: buffer(initSize), bufferSize(initSize), vectorSize(initSize)
 		{
 			for (uint32 i = 0; i < vectorSize; i++)
