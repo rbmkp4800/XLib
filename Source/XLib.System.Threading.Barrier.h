@@ -44,7 +44,7 @@ namespace XLib
 
 		inline void initialize(uint32 _threadCount)
 		{
-			Debug::AssertIfDebug(_threadCount > 0, DbgMsgFmt("invalid thread count value"));
+			XASSERT(_threadCount > 0, "invalid thread count value");
 
 			counter.value = 0;
 			events[0].initialize(false);
@@ -57,7 +57,7 @@ namespace XLib
 		template <typename PreTriggerAction>
 		inline void ready(PreTriggerAction action)
 		{
-			Debug::AssertIfDebug(isInitialized(), DbgMsgFmt("not initialized"));
+			XASSERT(isInitialized(), "not initialized");
 
 			Event &event = events[eventSelector];
 			event.reset();
@@ -86,14 +86,14 @@ namespace XLib
 	public:
 		inline void wait()
 		{
-			Debug::AssertIfDebug(isInitialized(), DbgMsgFmt("not initialized"));
+			XASSERT(isInitialized(), "not initialized");
 		}
 		inline void trigger()
 		{
-			Debug::AssertIfDebug(isInitialized(), DbgMsgFmt("not initialized"));
+			XASSERT(isInitialized(), "not initialized");
 		}
 
-		inline bool isInitialized() { return threadCount ? true : false; }
+		inline bool isInitialized() { }
 	};
 
 	/*template <>

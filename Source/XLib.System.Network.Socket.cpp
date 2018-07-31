@@ -44,7 +44,7 @@ bool Sockets::Startup()
 	WSAData wsaData = {};
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -70,7 +70,7 @@ bool Socket::initialize(AddressFamily family, ProtocolType type)
 		IPPROTO_TCP, nullptr, 0, WSA_FLAG_OVERLAPPED);
 	if (SOCKET(newHandle) == INVALID_SOCKET)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool Socket::bind(IPAddress address, uint16 port)
 	int result = ::bind(SOCKET(handle), (sockaddr*)&addr, sizeof(addr));
 	if (result == SOCKET_ERROR)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -105,7 +105,7 @@ bool TCPSocket::connect(IPAddress address, uint16 port)
 		if (error != WSAENETUNREACH && error != WSAEHOSTUNREACH &&
 			error != WSAETIMEDOUT && error != WSAECONNREFUSED)
 		{
-			Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+			//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 			return false;
 		}
 	}
@@ -119,7 +119,7 @@ bool TCPSocket::send(void* buffer, uint32 size)
 		&transferredSize, 0, nullptr, nullptr);
 	if (result)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	if (transferredSize != size)
@@ -135,7 +135,7 @@ bool TCPSocket::sendSegments(TransferBufferSegment* segments, uint32 segmentCoun
 		&transferredSize, 0, nullptr, nullptr);
 	if (result || transferredSize == 0)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -150,7 +150,7 @@ bool TCPSocket::receive(void* buffer, uint32 bufferSize, uint32& receivedSize)
 	receivedSize = transferredSize;
 	if (result || receivedSize == 0)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -164,7 +164,7 @@ bool TCPSocket::receiveAll(void* buffer, uint32 size)
 		&transferredSize, &flags, nullptr, nullptr);
 	if (result || transferredSize != size)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -182,7 +182,7 @@ void TCPSocket::asyncSend(void* buffer, uint32 size, DispatchedAsyncTask& task,
 
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		task.clear();
 		handler.call(false, 0, key);
 	}
@@ -200,7 +200,7 @@ void TCPSocket::asyncSendSegments(TransferBufferSegment* segments, uint32 segmen
 
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		task.clear();
 		handler.call(false, 0, key);
 	}
@@ -219,7 +219,7 @@ void TCPSocket::asyncReceive(void* buffer, uint32 size, DispatchedAsyncTask& tas
 
 	if (result && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		task.clear();
 		handler.call(false, 0, key);
 	}
@@ -233,7 +233,7 @@ bool TCPListenSocket::start(uint32 backlog)
 	int result = ::listen(SOCKET(handle), backlog);
 	if (result == SOCKET_ERROR)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -247,7 +247,7 @@ bool TCPListenSocket::accept(TCPSocket& socket, IPAddress& address)
 		(sockaddr*)&remoteSockaddr, &remoteSockaddrLength);
 	if (hAcceptedSocket == INVALID_SOCKET)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 
@@ -273,7 +273,7 @@ void TCPListenSocket::asyncAccept(TCPListenSocket::DispatchedAsyncTask& task,
 
 	if (!result && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		TCPSocket dummySocket;
 		handler.call(false, dummySocket, IPv4AddressAny, key);
 	}

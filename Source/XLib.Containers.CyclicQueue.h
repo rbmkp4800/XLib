@@ -47,14 +47,14 @@ namespace XLib
 
 		inline void pushBack(const Type& value)
 		{
-			Debug::CrashConditionOnDebug(isFull(), DbgMsgFmt("queue is full"));
+			XASSERT(!isFull(), "queue is full");
 
 			buffer[backIdx] = value;
 			backIdx = (backIdx + 1) % bufferSize;
 		}
 		inline Type popFront()
 		{
-			Debug::CrashConditionOnDebug(isEmpty(), DbgMsgFmt("queue is empty"));
+			XASSERT(!isEmpty(), "queue is empty");
 
 			Type value = buffer[frontIdx];
 			frontIdx = (frontIdx + 1) % bufferSize;
@@ -62,7 +62,7 @@ namespace XLib
 		}
 		inline void dropFront()
 		{
-			Debug::CrashConditionOnDebug(isEmpty(), DbgMsgFmt("queue is empty"));
+			XASSERT(!isEmpty(), "queue is empty");
 
 			buffer[frontIdx].~Type();
 			frontIdx = (frontIdx + 1) % bufferSize;
@@ -90,14 +90,14 @@ namespace XLib
 
 		inline void pushBack(const Type& value)
 		{
-			Debug::CrashConditionOnDebug(isFull(), DbgMsgFmt("queue is full"));
+			XASSERT(!isFull(), "queue is full");
 
 			buffer[backIdx] = value;
 			backIdx = (backIdx + 1) % bufferSize;
 		}
 		inline Type popFront()
 		{
-			Debug::CrashConditionOnDebug(isEmpty(), DbgMsgFmt("queue is empty"));
+			XASSERT(!isEmpty(), "queue is empty");
 
 			Type value = buffer[frontIdx];
 			frontIdx = (frontIdx + 1) % bufferSize;
@@ -105,7 +105,7 @@ namespace XLib
 		}
 		inline void dropFront()
 		{
-			Debug::CrashConditionOnDebug(isEmpty(), DbgMsgFmt("queue is empty"));
+			XASSERT(!isEmpty(), "queue is empty");
 
 			buffer[frontIdx]->~Type();
 			frontIdx = (frontIdx + 1) % bufferSize;

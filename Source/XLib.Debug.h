@@ -1,25 +1,27 @@
 #pragma once
 
-#define DbgMsgHead __FUNCTION__##"(): "
-#define DbgMsgFmt(message) (DbgMsgHead message)
-#define SysErrorDbgMsgFmt DbgMsgHead
+//#define DbgMsgHead __FUNCTION__##"(): "
+//#define DbgMsgFmt(message) (DbgMsgHead message)
+//#define SysErrorDbgMsgFmt DbgMsgHead
+
+#ifdef _DEBUG
+
+#define XASSERT(cond, message)	\
+if (!(cond)) {					\
+	throw;						\
+}
+
+#else
+
+#define ASSERT(cond, ...)
+
+#endif
+
+#define XFATAL(message)	throw;
 
 namespace XLib
 {
-	/*enum class DebugOutputType : uint32
-	{
-		Log = 0,
-		Warning = 1,
-		Error = 2,
-	};
-
-	class IDebugOutputListener abstract
-	{
-	public:
-		virtual void put(DebugOutputType type, const char* message);
-	};*/
-
-	struct Debug abstract final
+	/*struct Debug abstract final
 	{
 		static void Log(const char* message);
 		static void Crash(const char* message);
@@ -34,7 +36,7 @@ namespace XLib
 #endif
 
 		static void LogLastSystemError(const char* location);
-	};
+	};*/
 
 /*
 

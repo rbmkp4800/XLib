@@ -56,15 +56,15 @@ void Thread::Switch() { SwitchToThread(); }
 bool WaitableBase::wait()
 {
 	DWORD result = WaitForSingleObject(handle, INFINITE);
-	if (result == WAIT_FAILED)
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+	//if (result == WAIT_FAILED)
+	//	Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 	return result == WAIT_OBJECT_0;
 }
 bool WaitableBase::wait(uint32 timeout)
 {
 	DWORD result = WaitForSingleObject(handle, timeout);
-	if (result == WAIT_FAILED)
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+	//if (result == WAIT_FAILED)
+	//	Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 	return result == WAIT_OBJECT_0;
 }
 
@@ -73,7 +73,7 @@ bool _private::WaitAll(void** handles, uint32 handleCount)
 	DWORD result = WaitForMultipleObjects(handleCount, handles, true, INFINITE);
 	if (result == WAIT_FAILED)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;

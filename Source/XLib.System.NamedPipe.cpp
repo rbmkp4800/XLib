@@ -25,7 +25,7 @@ bool NamedPipe::create(const char* name, uint32 outBufferSize, uint32 inBufferSi
 		handle = _handle;
 	else
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 
@@ -34,10 +34,11 @@ bool NamedPipe::create(const char* name, uint32 outBufferSize, uint32 inBufferSi
 
 bool NamedPipe::connect()
 {
-	Debug::CrashConditionOnDebug(!handle, DbgMsgFmt("not initialized"));
+	XASSERT(isInitialized(), "not initialized");
+
 	if (!ConnectNamedPipe(handle, nullptr))
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	return true;
@@ -45,16 +46,17 @@ bool NamedPipe::connect()
 
 bool NamedPipe::asyncConnect(DispatchedAsyncTask& task, NamedPipeConnectedHandler handler, uintptr key)
 {
+	XASSERT(isInitialized(), "not initialized");
+
 	task.rawHandler = handler.toRaw();
 	task.key = key;
 	task.state = DispatchedAsyncTask::State::NamedPipeConnect;
 	
-	Debug::CrashConditionOnDebug(!handle, DbgMsgFmt("not initialized"));
 	BOOL result = ConnectNamedPipe(handle, (OVERLAPPED*)&task.overlapped);
 	DWORD errorCode = GetLastError();
 	if (result == FALSE && errorCode != ERROR_IO_PENDING && errorCode != ERROR_PIPE_CONNECTED)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		task.clear();
 		return false;
 	}
@@ -101,7 +103,7 @@ bool NamedPipe::asyncRead(void* buffer, uint32 size, DispatchedAsyncTask& task,
 	BOOL result = ReadFile(handle, buffer, size, nullptr, (OVERLAPPED*)&task.overlapped);
 	if (result == FALSE && GetLastError() != ERROR_IO_PENDING)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		task.clear();
 		return false;
 	}

@@ -70,7 +70,7 @@ namespace XLib
 		}
 		inline void release(uint32 blockId)
 		{
-			DebugAssert(blockId < bufferSize, DbgMsgFmt("invalid blockId"));
+			XASSERT(blockId < bufferSize, "invalid blockId");
 
 			buffer[blockId].nextFreeBlock = firstFreeBlock;
 			firstFreeBlock = blockId;
@@ -97,7 +97,7 @@ namespace XLib
 		};
 
 		inline uint32 computeChunkSize(uint8 chunkIndex)
-		{ return 1 << (minBufferSizeLog2 + chunkIndex); }
+			{ return 1 << (minBufferSizeLog2 + chunkIndex); }
 
 		Chunk chunks[chunksLimit];
 		uint8 allocatedChunkCount;
@@ -164,11 +164,7 @@ namespace XLib
 				if (block >= chunk.buffer && block < chunk.buffer + computeChunkSize(i))
 				{
 					uintptr offset = uintptr(block) - uintptr(chunk.buffer);
-					if (offset % sizeof(Block) != 0)
-					{
-						Debug::Warning(DbgMsgFmt("invalid pointer"));
-						return;
-					}
+					XASSERT(offset % sizeof(Block) == 0, "invalid pointer");
 
 					block->nextFreeBlockId = chunk.firstFreeBlockId;
 					chunk.firstFreeBlockId = uint32(offset / sizeof(Block));
@@ -176,7 +172,7 @@ namespace XLib
 				}
 			}
 
-			Debug::Warning(DbgMsgFmt("invalid pointer"));
+			XFATAL("invalid pointer");
 		}
 	};
 }

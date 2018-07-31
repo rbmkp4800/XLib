@@ -49,7 +49,7 @@ void AsyncIODispatcher::dispatchAll()
 			return;
 		if (!result && !task)
 		{
-			Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+			//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 			return;
 		}
 
@@ -91,7 +91,7 @@ void AsyncIODispatcher::dispatchAll()
 				}
 
 				default:
-					Debug::Warning(DbgMsgFmt("invalid task type"));
+					// TODO: warning
 					break;
 			}
 		}

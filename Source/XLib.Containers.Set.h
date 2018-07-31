@@ -197,8 +197,11 @@ namespace XLib
 
 		inline void insertPreAllocated(PreAllocatedElementHandle handle)
 		{
-			Debug::CrashConditionOnDebug(handle.node == nullptr || handle.node->left || handle.node->right
-				|| handle.node->parent, DbgMsgFmt("invalid preallocated handle"));
+			XASSERT(handle.node != nullptr &&
+				!handle.node->left &&
+				!handle.node->right &&
+				!handle.node->parent,
+				"invalid preallocated handle");
 
 			handle.node->left = nullptr;
 			handle.node->right = nullptr;

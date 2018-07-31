@@ -12,16 +12,16 @@ void Event::initialize(bool state, bool manualReset)
 }
 void Event::set()
 {
-	Debug::CrashConditionOnDebug(!isInitialized(), DbgMsgFmt("not initialized"));
+	XASSERT(isInitialized(), "not initialized");
 	SetEvent(handle);
 }
 void Event::reset()
 {
-	Debug::CrashConditionOnDebug(!isInitialized(), DbgMsgFmt("not initialized"));
+	XASSERT(isInitialized(), "not initialized");
 	ResetEvent(handle);
 }
 void Event::pulse()
 {
-	Debug::CrashConditionOnDebug(!isInitialized(), DbgMsgFmt("not initialized"));
+	XASSERT(isInitialized(), "not initialized");
 	PulseEvent(handle);
 }

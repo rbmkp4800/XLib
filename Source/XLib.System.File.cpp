@@ -36,7 +36,7 @@ bool File::read(void* buffer, uint32 size)
 	BOOL result = ReadFile(handle, buffer, size, &readSize, nullptr);
 	if (!result)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	if (readSize != size)
@@ -53,7 +53,7 @@ bool File::read(void* buffer, uint32 bufferSize, uint32& readSize)
 	BOOL result = ReadFile(handle, buffer, bufferSize, &_readSize, nullptr);
 	if (!result)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	readSize = _readSize;
@@ -66,7 +66,7 @@ bool File::write(const void* buffer, uint32 size)
 	BOOL result = WriteFile(handle, buffer, size, &writtenSize, nullptr);
 	if (!result)
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return false;
 	}
 	if (writtenSize != size)
@@ -76,8 +76,8 @@ bool File::write(const void* buffer, uint32 size)
 
 void File::flush()
 {
-	if (!FlushFileBuffers(handle))
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+	//if (!FlushFileBuffers(handle))
+	//	Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 }
 
 uint64 File::getSize()
@@ -85,7 +85,7 @@ uint64 File::getSize()
 	LARGE_INTEGER size;
 	if (!GetFileSizeEx(handle, &size))
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return uint64(-1);
 	}
 	return size.QuadPart;
@@ -97,7 +97,7 @@ uint64 File::getPosition()
 	distance.QuadPart = 0;
 	if (!SetFilePointerEx(handle, distance, &postion, FILE_CURRENT))
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return uint64(-1);
 	}
 	return postion.QuadPart;
@@ -109,7 +109,7 @@ uint64 File::setPosition(sint64 offset, FilePosition origin)
 	distance.QuadPart = offset;
 	if (!SetFilePointerEx(handle, distance, &postion, DWORD(origin)))
 	{
-		Debug::LogLastSystemError(SysErrorDbgMsgFmt);
+		//Debug::LogLastSystemError(SysErrorDbgMsgFmt);
 		return uint64(-1);
 	}
 	return postion.QuadPart;
