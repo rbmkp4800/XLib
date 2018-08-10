@@ -570,12 +570,29 @@ inline D3D12_BOX D3D12Box(UINT left, UINT right, UINT top = 0, UINT bottom = 1, 
 	return box;
 }
 
-inline D3D12_TEXTURE_COPY_LOCATION D3D12TextureCopyLocation(ID3D12Resource *d3dResource, UINT subresourceIndex)
+inline D3D12_TEXTURE_COPY_LOCATION D3D12TextureCopyLocation_Subresource(
+	ID3D12Resource *d3dResource, UINT subresourceIndex = 0)
 {
 	D3D12_TEXTURE_COPY_LOCATION location = {};
 	location.pResource = d3dResource;
 	location.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 	location.SubresourceIndex = subresourceIndex;
+	return location;
+}
+
+inline D3D12_TEXTURE_COPY_LOCATION D3D12TextureCopyLocation_PlacedFootprint(
+	ID3D12Resource *d3dResource, UINT64 offset, DXGI_FORMAT format, UINT width,
+	UINT height, UINT depth, UINT rowPitch)
+{
+	D3D12_TEXTURE_COPY_LOCATION location = {};
+	location.pResource = d3dResource;
+	location.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+	location.PlacedFootprint.Offset = offset;
+	location.PlacedFootprint.Footprint.Format = format;
+	location.PlacedFootprint.Footprint.Width = width;
+	location.PlacedFootprint.Footprint.Height = height;
+	location.PlacedFootprint.Footprint.Depth = depth;
+	location.PlacedFootprint.Footprint.RowPitch = rowPitch;
 	return location;
 }
 
