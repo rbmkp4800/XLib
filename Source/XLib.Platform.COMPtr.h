@@ -22,6 +22,19 @@ namespace XLib::Platform
 		COMPtr() = default;
 		inline ~COMPtr() { destroy(); }
 
+		inline COMPtr(COMPtr&& that)
+		{
+			destroy();
+			ptr = that.ptr;
+			that.ptr = nullptr;
+		}
+		inline void operator = (COMPtr&& that)
+		{
+			destroy();
+			ptr = that.ptr;
+			that.ptr = nullptr;
+		}
+
 		inline void destroy()
 		{
 			if (ptr)
@@ -31,7 +44,12 @@ namespace XLib::Platform
 			}
 		}
 
-		inline Type* moveToPtr() { Type* result = ptr; ptr = nullptr; return result; }
+		inline Type* moveToPtr()
+		{
+			Type* result = ptr;
+			ptr = nullptr;
+			return result;
+		}
 
 		inline Type** initRef()
 		{
@@ -54,6 +72,6 @@ namespace XLib::Platform
 
 		inline GUID uuid() { return __uuidof(Type); }
 
-		inline bool isInitialized() { return ptr ? true : false; }
+		inline bool isInitialized() { return ptr != nullptr; }
 	};
 }
