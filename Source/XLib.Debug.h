@@ -13,7 +13,7 @@ if (!(cond)) {					\
 
 #else
 
-#define ASSERT(cond, ...)
+#define XASSERT(cond, ...)
 
 #endif
 
