@@ -404,6 +404,17 @@ inline D3D12_SHADER_RESOURCE_VIEW_DESC D3D12ShaderResourceViewDesc_Texture2D(
 	return desc;
 }
 
+inline D3D12_RENDER_TARGET_VIEW_DESC D3D12RenderTargetViewDesc_Texture2D(
+	UINT mipSlice, UINT planeSlice = 0, DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN)
+{
+	D3D12_RENDER_TARGET_VIEW_DESC desc = {};
+	desc.Format = format;
+	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	desc.Texture2D.MipSlice = mipSlice;
+	desc.Texture2D.PlaneSlice = planeSlice;
+	return desc;
+}
+
 inline D3D12_DEPTH_STENCIL_VIEW_DESC D3D12DepthStencilViewDesc_Texture2D(DXGI_FORMAT format,
 	D3D12_DSV_FLAGS flags = D3D12_DSV_FLAG_NONE, UINT mipSlice = 0)
 {
