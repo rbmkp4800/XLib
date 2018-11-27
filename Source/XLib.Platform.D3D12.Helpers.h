@@ -82,14 +82,14 @@ inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Buffer(UINT64 size,
 
 inline D3D12_RESOURCE_DESC D3D12ResourceDesc_Texture2D(DXGI_FORMAT format,
 	UINT width, UINT height, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE,
-	UINT mipLevels = 0)
+	UINT16 mipLevels = 0, UINT16 arraySize = 1)
 {
 	D3D12_RESOURCE_DESC desc;
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	desc.Alignment = 0;
 	desc.Width = width;
 	desc.Height = height;
-	desc.DepthOrArraySize = 1;
+	desc.DepthOrArraySize = arraySize;
 	desc.MipLevels = mipLevels;
 	desc.Format = format;
 	desc.SampleDesc.Count = 1;
@@ -404,6 +404,36 @@ inline D3D12_SHADER_RESOURCE_VIEW_DESC D3D12ShaderResourceViewDesc_Texture2D(
 	return desc;
 }
 
+inline D3D12_SHADER_RESOURCE_VIEW_DESC D3D12ShaderResourceViewDesc_Texture2DArray(
+	DXGI_FORMAT format, UINT firstArraySlice, UINT arraySize, UINT planeSlice = 0,
+	UINT mostDetailedMip = 0, UINT mipLevels = -1)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+	desc.Format = format;
+	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+	desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	desc.Texture2DArray.MostDetailedMip = mostDetailedMip;
+	desc.Texture2DArray.MipLevels = mipLevels;
+	desc.Texture2DArray.FirstArraySlice = firstArraySlice;
+	desc.Texture2DArray.ArraySize = arraySize;
+	desc.Texture2DArray.PlaneSlice = planeSlice;
+	desc.Texture2DArray.ResourceMinLODClamp = 0.0f;
+	return desc;
+}
+
+inline D3D12_SHADER_RESOURCE_VIEW_DESC D3D12ShaderResourceViewDesc_TextureCube(
+	DXGI_FORMAT format, UINT mostDetailedMip = 0, UINT mipLevels = -1)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+	desc.Format = format;
+	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	desc.TextureCube.MostDetailedMip = mostDetailedMip;
+	desc.TextureCube.MipLevels = mipLevels;
+	desc.TextureCube.ResourceMinLODClamp = 0.0f;
+	return desc;
+}
+
 inline D3D12_RENDER_TARGET_VIEW_DESC D3D12RenderTargetViewDesc_Texture2D(
 	UINT mipSlice, UINT planeSlice = 0, DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN)
 {
@@ -415,14 +445,28 @@ inline D3D12_RENDER_TARGET_VIEW_DESC D3D12RenderTargetViewDesc_Texture2D(
 	return desc;
 }
 
-inline D3D12_DEPTH_STENCIL_VIEW_DESC D3D12DepthStencilViewDesc_Texture2D(DXGI_FORMAT format,
-	D3D12_DSV_FLAGS flags = D3D12_DSV_FLAG_NONE, UINT mipSlice = 0)
+inline D3D12_DEPTH_STENCIL_VIEW_DESC D3D12DepthStencilViewDesc_Texture2D(
+	DXGI_FORMAT format, D3D12_DSV_FLAGS flags = D3D12_DSV_FLAG_NONE, UINT mipSlice = 0)
 {
 	D3D12_DEPTH_STENCIL_VIEW_DESC desc;
 	desc.Format = format;
 	desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	desc.Flags = D3D12_DSV_FLAG_NONE;
 	desc.Texture2D.MipSlice = mipSlice;
+	return desc;
+}
+
+inline D3D12_DEPTH_STENCIL_VIEW_DESC D3D12DepthStencilViewDesc_Texture2DArray(
+	DXGI_FORMAT format, UINT mipSlice = 0, UINT firstArraySlice = 0, UINT arraySize = 1,
+	D3D12_DSV_FLAGS flags = D3D12_DSV_FLAG_NONE)
+{
+	D3D12_DEPTH_STENCIL_VIEW_DESC desc;
+	desc.Format = format;
+	desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+	desc.Flags = D3D12_DSV_FLAG_NONE;
+	desc.Texture2DArray.MipSlice = mipSlice;
+	desc.Texture2DArray.FirstArraySlice = firstArraySlice;
+	desc.Texture2DArray.ArraySize = arraySize;
 	return desc;
 }
 

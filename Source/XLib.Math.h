@@ -20,10 +20,10 @@ namespace XLib
 
 		static inline float32 NanF32() { return as<float32>(uint32(0x7fc0'0000)); }
 		static inline float64 NanF64() { return as<float64>(uint64(0x7ff8'0000'0000'0000ull)); }
-		static constexpr float32 PiF32 = 3.14159265f;
-		static constexpr float64 PiF64 = 3.141592653589793238;
-		static constexpr float32 EF32 = 2.71828182f;
-		static constexpr float64 EF64 = 2.718281828459045233;
+
+		template <class Type> static constexpr Type Pi = Type(3.1415926535897932385l);
+		template <class Type> static constexpr Type HalfPi = Type(3.1415926535897932385l * 0.5l);
+		template <class Type> static constexpr Type TwoPi = Type(3.1415926535897932385l * 2.0l);
 
 		static float32 Sqrt(float32 arg);
 		static float32 Sin(float32 arg);
